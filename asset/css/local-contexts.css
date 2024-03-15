@@ -1,0 +1,60 @@
+.labels {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.name {
+    display: block;
+    font-weight: bold;
+}
+
+.label > .name {
+    display: block;
+    padding: 6px 2em 6px 6px;
+    border-radius: 3px 3px 0 0;
+    border-top-width: 1px;
+}
+
+.language {
+    font-weight: normal !important;
+}
+
+.label {
+    display: flex;
+    flex-direction: row;
+    padding: 6px;
+}
+
+.column {
+    padding: 6px;
+    object-fit: contain;
+    align-self: center;
+}
+
+.check {
+    width: 7%;
+    text-align: center;
+}
+
+.image {
+    width: 18%;
+    height: 150px;
+}
+
+.text {
+    width: 75%;
+}
+
+.label:nth-of-type(2n) {
+    background: rgba(0,0,0,.04);
+}
+
+.label > .name, 
+.label > .description {
+    margin-bottom: 6px;
+}
+
+.label > .name {
+    padding: 0 2rem 0 0;
+}
