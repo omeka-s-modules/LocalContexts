@@ -10,11 +10,6 @@ return [
             ],
         ],
     ],
-    // 'api_adapters' => [
-    //     'invokables' => [
-    //         'pid_items' => 'LocalContexts\Api\Adapter\PIDItemAdapter',
-    //     ],
-    // ],
     'controllers' => [
         'factories' => [
             'LocalContexts\Controller\Index' => 'LocalContexts\Service\Controller\IndexControllerFactory',
@@ -23,6 +18,11 @@ return [
     'view_manager' => [
         'template_path_stack' => [
             OMEKA_PATH . '/modules/LocalContexts/view',
+        ],
+    ],
+    'block_layouts' => [
+        'invokables' => [
+            'localContexts' => LocalContexts\Site\BlockLayout\LocalContexts::class,
         ],
     ],
     'entity_manager' => [

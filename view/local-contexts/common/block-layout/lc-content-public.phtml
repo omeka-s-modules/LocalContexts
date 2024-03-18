@@ -1,0 +1,12 @@
+<div class='labels'>
+    <?php
+    $html = '';
+    foreach ($this->lc_content as $content) {
+        $html .= "<div class='labels'>";
+        $html .= "<img class='column image' src='" . $content['image_url'] . "'>";
+        $html .= "<div class='column text'><div class='name'>" . $content['name'] . "</div>";
+        $html .= "<div class='description'>" . $content['text'] . "</div></div></div>"; 
+    } 
+    echo $html;
+    ?>
+</div>

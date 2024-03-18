@@ -60,6 +60,9 @@ class IndexController extends AbstractActionController
                 $noticeArray[] = $notice;
             }
             
+            // Assign notices to general settings for page block access
+            $this->settings->set('lc_notices', $noticeArray);
+
             // Assign notices to site(s)
             $siteSettings = $this->siteSettings();
             if (isset($params['lc-sites'])) {
