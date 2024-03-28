@@ -1,7 +1,11 @@
-.labels {
+.labels, .inputs {
     display: inline-flex;
     flex-wrap: wrap;
     align-items: flex-start;
+}
+
+.inputs {
+    line-height: unset;
 }
 
 .name {
@@ -39,7 +43,7 @@
 
 .image {
     width: 18%;
-    height: 150px;
+    height: 125px;
 }
 
 .text {

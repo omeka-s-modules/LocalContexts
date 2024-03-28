@@ -117,6 +117,7 @@ class IndexController extends AbstractActionController
         $projectMetadata = json_decode($response->getBody(), true);
 
         foreach ($projectMetadata['notice'] as $notice) {
+            $noticeArray = array();
             $noticeArray['name'] = $notice['name'];
             $noticeArray['image_url'] = $notice['img_url'];
             $noticeArray['text'] = $notice['default_text'];
@@ -127,9 +128,13 @@ class IndexController extends AbstractActionController
                 $noticeArray['text'] = $notice['translations'][0]['translated_text'];
                 $noticeArray['language'] = $notice['translations'][0]['language'];
                 $assignArray[] = $noticeArray;
+                $noticeArray = array();
             }
         }
-
+        $noticeArray['name'] = "Open to Collaborate Notices";
+        $noticeArray['image_url'] = "https://storage.googleapis.com/local-contexts-hub.appspot.com/labels/notices/ci-open-to-collaborate.png";
+        $noticeArray['text'] = "Our institution is committed to the development of new modes of collaboration, engagement, and partnership with Indigenous peoples for the care and stewardship of past and future heritage collections.";
+        $assignArray[] = $noticeArray;
         return $assignArray;
     }
 }
