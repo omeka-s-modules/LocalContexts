@@ -131,10 +131,6 @@ class IndexController extends AbstractActionController
                 $noticeArray = array();
             }
         }
-        $noticeArray['name'] = "Open to Collaborate Notices";
-        $noticeArray['image_url'] = "https://storage.googleapis.com/local-contexts-hub.appspot.com/labels/notices/ci-open-to-collaborate.png";
-        $noticeArray['text'] = "Our institution is committed to the development of new modes of collaboration, engagement, and partnership with Indigenous peoples for the care and stewardship of past and future heritage collections.";
-        $assignArray[] = $noticeArray;
         return $assignArray;
     }
 }
