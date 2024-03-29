@@ -61,20 +61,7 @@ class Module extends AbstractModule
         $sharedEventManager->attach(
             'Omeka\Api\Adapter\ItemAdapter',
             'api.hydrate.post',
-            function (Event $event) {
-                $item = $event->getParam('entity');
-                $adapter = $event->getTarget();
-                $propertyAdapter = $adapter->getAdapter('properties');
-                $data = $event->getParam('request')->getContent();
-                $lcContentProperty = $data['o:lc-content-property']['o:id'] ?: null;
-                $property = $propertyAdapter->findEntity($lcContentProperty);
-                if ($data['o:lc-content']) {
-                    foreach ($data['o:lc-content'] as $lcContent) {
-                        $lcContent = json_decode($lcContent, true);
-                        $this->saveLCMetadata($lcContent, $property, $item);
-                    }
-                }
-            }
+            [$this, 'LCHydrate']
         );
     }
 
@@ -118,6 +105,28 @@ class Module extends AbstractModule
                 'lc_content' => $contentArray,
 	        ]);
             $view->headLink()->appendStylesheet($view->assetUrl('css/local-contexts.css', 'LocalContexts'));
+        }
+    }
+
+    public function LCHydrate(Event $event) {
+        $item = $event->getParam('entity');
+        $adapter = $event->getTarget();
+        $data = $event->getParam('request')->getContent();
+        $propertyAdapter = $adapter->getAdapter('properties');
+
+        if ($data['o:lc-content-property']['o:id']) {
+            $lcContentProperty = $data['o:lc-content-property']['o:id'];
+        } else {
+            // If no metadata value given, do nothing
+            return;
+        }
+
+        $property = $propertyAdapter->findEntity($lcContentProperty);
+        if ($data['o:lc-content']) {
+            foreach ($data['o:lc-content'] as $lcContent) {
+                $lcContent = json_decode($lcContent, true);
+                $this->saveLCMetadata($lcContent, $property, $item);
+            }
         }
     }
 
