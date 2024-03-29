@@ -6,13 +6,8 @@
             <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as Dublin Core Rights metadata.'); ?></div>
         </div>
     </div>
-    <div class="inputs">
+    <div class="inputs localcontexts">
         <?php
-        // $writer = new \Laminas\Log\Writer\Stream('logs/application.log');
-        // $logger = new \Laminas\Log\Logger();
-        // $logger->addWriter($writer);
-        // // $logger->info($data['lc_content_property[property_id]']);
-        // $logger->info(print_r($data, 1));
         echo $this->propertySelect([
             'name' => 'o:lc-content-property[o:id]',
             'attributes' => [

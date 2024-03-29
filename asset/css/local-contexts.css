@@ -1,10 +1,10 @@
-.labels, .inputs {
+.labels, .inputs.localcontexts {
     display: inline-flex;
     flex-wrap: wrap;
     align-items: flex-start;
 }
 
-.inputs {
+.inputs.localcontexts {
     line-height: unset;
 }
 
