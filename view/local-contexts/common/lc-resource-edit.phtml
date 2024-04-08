@@ -3,13 +3,13 @@
         <label for="o:lc-content"><?php echo $this->translate('Local Contexts Notices'); ?></label>
         <a href="#" class="expand" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
         <div class="collapsible">
-            <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as Dublin Core Rights metadata.'); ?></div>
+            <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as chosen metadata field.'); ?></div>
         </div>
     </div>
     <div class="inputs localcontexts">
         <?php
         echo $this->propertySelect([
-            'name' => 'o:lc-content-property[o:id]',
+            'name' => 'o:lc-content-property',
             'attributes' => [
                 'class' => 'chosen-select',
                 'multiple' => false,

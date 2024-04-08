@@ -19,9 +19,8 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/local-contexts.css', 'L
 </fieldset>
 
 <fieldset id="notices" class="section">
-    <div class="labels">
         <?php foreach($lc_content as $content): ?>
-        <div class="label">
+        <div class="label admin">
             <div class="column check">
                 <input name="lc-notice[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($content)); ?>">
             </div>
@@ -38,7 +37,6 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/local-contexts.css', 'L
             </div>
         </div>
         <?php endforeach; ?>
-    </div>
 </fieldset>
 <div id="page-actions">
     <button id='index-submit'><?php echo $this->escapeHtml($this->translate('Submit')); ?></button>
