@@ -26,19 +26,27 @@ class LocalContexts extends AbstractBlockLayout
         SitePageRepresentation $page = null, SitePageBlockRepresentation $block = null
     ) {
         if ($view->setting('lc_notices')) {        
-            $notices = $view->setting('lc_notices');
-			foreach ($notices as $notice) {
-				$notice = json_decode($notice, true);
-				$noticeName = $notice['name'];
-				$noticeArray[$noticeName] = $noticeName;
+            $projects = $view->setting('lc_notices');
+            foreach ($projects as $project) {
+                $project = json_decode($project, true);
+                if (isset($project['project_title'])) {
+                    $projectName = $project['project_title'];
+                } elseif (isset($project['project_url'])) {
+                    $projectName = $project['project_url'];
+                } elseif ($project[0]['name'] == 'Open to Collaborate Notice') {
+                    $projectName = 'Open to Collaborate notice';
+                } else {
+                    $projectName = '[no project title]';
+                }
+				$projectArray[$projectName] = $projectName;
 			}
 	
 			$setLocalContexts = $block ? $block->dataValue('localContexts') : '';
 	        $select = new Select('o:block[__blockIndex__][o:data][localContexts]');
-	        $select->setValueOptions($noticeArray)->setValue($setLocalContexts);
+	        $select->setValueOptions($projectArray)->setValue($setLocalContexts);
 
 	        $html = '<div class="field">';
-	        $html .= '<div class="field-meta"><label>' . $view->translate('Local Contexts') . '</label></div>';
+	        $html .= '<div class="field-meta"><label>' . $view->translate('Local Contexts project name') . '</label></div>';
 	        $html .= '<div class="inputs">' . $view->formSelect($select) . '</div>';
 	        $html .= '</div>'; 
         } else {
@@ -56,20 +64,22 @@ class LocalContexts extends AbstractBlockLayout
         }
 		
 		if ($view->setting('lc_notices')) {
-			$notices = $view->setting('lc_notices');
-			foreach ($notices as $notice) {
-				$notice = json_decode($notice, true);
-				if ($notice['name'] == $localContextContent) {
-					$noticeArray['name'] = $notice['name'];
-	                $noticeArray['image_url'] = $notice['image_url'];
-	                $noticeArray['text'] = $notice['text'];
-					$contentArray[] = $noticeArray;
-				}
+			$projects = $view->setting('lc_notices');
+			foreach ($projects as $project) {
+				$project = json_decode($project, true);
+				if ((isset($project['project_title']) && $project['project_title'] == $localContextContent) || $project[0]['name'] == 'Open to Collaborate Notice') {
+                    $contentArray = $project;
+                } else {
+                    $contentArray = [];
+                }
 			}
-
-			return $view->partial('local-contexts/common/block-layout/lc-content-public', [
-	            'lc_content' => $contentArray,
-	        ]);
-		}
+		} else {
+            return '';
+        }
+        
+        $view->headLink()->appendStylesheet($view->assetUrl('css/local-contexts.css', 'LocalContexts'));
+        return $view->partial('local-contexts/common/block-layout/lc-content-public', [
+            'lc_content' => $contentArray,
+        ]);
 	}
 }

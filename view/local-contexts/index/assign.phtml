@@ -19,21 +19,32 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/local-contexts.css', 'L
 </fieldset>
 
 <fieldset id="notices" class="section">
-        <?php foreach($lc_content as $content): ?>
+        <?php foreach($lc_content as $notice_content): ?>
         <div class="label admin">
             <div class="column check">
-                <input name="lc-notice[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($content)); ?>">
+                <input name="lc-notice[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($notice_content)); ?>">
             </div>
-            <img class="column image" src="<?php echo($content['image_url']); ?>">
-            <div class="column text">
-                <div class="name">
-                    <?php 
-                    echo($content['name']);
-                    if (isset($content['language'])) {
-                        echo '<span class="language"> (' . $content['language'] . ')</span>';
-                    }
-                    ?></div>
-                <div class="description"><?php echo $content['text']; ?></div>
+            <div class="column content">
+                <?php if (isset($notice_content['project_url'])): ?>
+                    <a class="name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($notice_content['project_title']); ?></a>
+                <?php endif; ?>
+                <?php foreach($notice_content as $key => $content): ?>
+                    <?php if (is_int($key)): ?>
+                        <div class="column description">
+                            <img class="column image" src="<?php echo($content['image_url']); ?>">
+                            <div class="column text">
+                                <div class="name">
+                                    <?php 
+                                    echo($content['name']);
+                                    if (isset($content['language'])) {
+                                        echo '<span class="language"> (' . $content['language'] . ')</span>';
+                                    }
+                                    ?></div>
+                                <div class="description"><?php echo $content['text']; ?></div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
             </div>
         </div>
         <?php endforeach; ?>

@@ -75,13 +75,13 @@ class IndexController extends AbstractActionController
         $contentArray = [];
         if (!empty($this->settings->get('lc_project_id'))) {
             $projects = explode(',', $this->settings->get('lc_project_id'));
+            // Display 'Open to Collaborate' notice along with all projects
+            $contentArray[] = $this->fetchAPIdata();
             foreach ($projects as $projectID) {
-                $contentArray = array_merge($contentArray, $this->fetchAPIdata($projectID));
-                // Remove duplicates
-                $contentArray = array_unique($contentArray, SORT_REGULAR);
+                $contentArray[] = $this->fetchAPIdata(trim($projectID));
             }
         } else {
-            $contentArray = $this->fetchAPIdata();
+            $contentArray[] = $this->fetchAPIdata();
         }
         
         $view->setVariable('lc_content', $contentArray);
@@ -96,28 +96,28 @@ class IndexController extends AbstractActionController
      */
     protected function fetchAPIdata($projectID = null)
     {
-        // Retrieve generic 'Open to Collaborate' even if no project ID given
-        $collaborateURL = 'https://localcontextshub.org/api/v1/notices/open_to_collaborate';
-        $this->client->setUri($collaborateURL);
-        $response = $this->client->send();
-        $collaborateMetadata = json_decode($response->getBody(), true);
-        $noticeArray['name'] = $collaborateMetadata['name'];
-        $noticeArray['image_url'] = $collaborateMetadata['img_url'];
-        $noticeArray['text'] = $collaborateMetadata['default_text'];
-        $assignArray[] = $noticeArray;
-        
         // If project ID(s) given, retrieve specific project notices
         if (!empty($projectID)) {
             $APIProjectURL = 'https://localcontextshub.org/api/v1/projects/' . $projectID;
         } else {
+            // If not, retrieve generic 'Open to Collaborate' notice
+            $collaborateURL = 'https://localcontextshub.org/api/v1/notices/open_to_collaborate';
+            $this->client->setUri($collaborateURL);
+            $response = $this->client->send();
+            $collaborateMetadata = json_decode($response->getBody(), true);
+            $noticeArray['name'] = $collaborateMetadata['name'];
+            $noticeArray['image_url'] = $collaborateMetadata['img_url'];
+            $noticeArray['text'] = $collaborateMetadata['default_text'];
+            $assignArray[] = $noticeArray;
             return $assignArray;
         }
         $this->client->setUri($APIProjectURL);
         $response = $this->client->send();
         $projectMetadata = json_decode($response->getBody(), true);
 
+        $assignArray['project_url'] = $projectMetadata['project_page'] ?: null;
+        $assignArray['project_title'] = $projectMetadata['title'] ?: null;
         foreach ($projectMetadata['notice'] as $notice) {
-            $noticeArray = array();
             $noticeArray['name'] = $notice['name'];
             $noticeArray['image_url'] = $notice['img_url'];
             $noticeArray['text'] = $notice['default_text'];

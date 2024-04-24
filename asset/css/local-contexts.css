@@ -1,6 +1,6 @@
 .label, .inputs.localcontexts {
     display: inline-flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     align-items: flex-start;
 }
 
@@ -37,8 +37,17 @@ label, .label {
 }
 
 .check {
-    width: 7%; !important;
-    text-align: center;
+    width: 7% !important;
+    text-align: center !important;
+}
+
+.content {
+    width: 93%;
+}
+
+.description {
+    display: flex;
+    flex-direction: row;
 }
 
 .image {
@@ -50,7 +59,14 @@ label, .label {
     width: 75%;
 }
 
-.label.admin:nth-of-type(2n) {
+.project-link {
+    display: block;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: right !important;
+} 
+
+.label:nth-of-type(2n) {
     background: rgba(0,0,0,.04);
 }
 

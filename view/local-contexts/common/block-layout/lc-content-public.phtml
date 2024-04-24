@@ -1,11 +1,20 @@
-<div class='label'>
-    <?php
-    $html = '';
-    foreach ($this->lc_content as $content) {
+<?php
+$translate = $this->plugin('translate');
+$html = '';
+$html .= "<div class='label'>";
+foreach ($this->lc_content as $key => $content) {
+    if (is_int($key)) {
         $html .= "<img class='column image' src='" . $content['image_url'] . "'>";
         $html .= "<div class='column text'><div class='name'>" . $content['name'] . "</div>";
         $html .= "<div class='description'>" . $content['text'] . "</div></div>";
-    } 
-    echo $html;
-    ?>
-</div>
+    }
+}
+$html .= "</div>";
+if (isset($this->lc_content['project_url'])) {
+    $html .= "<div class='project-link'>";
+    $html .= "<span>" . $translate('Local Contexts project link: ') . "</span>";
+    $html .= "<a target='_blank' href=" . $this->lc_content['project_url'] . ">" . $this->lc_content['project_title'] . "</a>";
+    $html .= "</div>";
+}
+echo $html;
+?>

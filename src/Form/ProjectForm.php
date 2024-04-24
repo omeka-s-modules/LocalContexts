@@ -23,22 +23,5 @@ class ProjectForm extends Form
                 'id' => 'lc-project-id',
             ],
         ]);
-        
-        // $this->add([
-        //     'name' => 'sites',
-        //     'type' => SiteSelect::class,
-        //     'attributes' => [
-        //         'class' => 'chosen-select',
-        //         'data-placeholder' => 'Select site(s)', // @translate
-        //         'multiple' => true,
-        //         'id' => 'sites',
-        //         'required' => true,
-        //     ],
-        //     'options' => [
-        //         'label' => 'Sites', // @translate
-        //         'info' => 'Select site(s) to apply Local Contexts Notices.', // @translate
-        //         'empty_option' => '',
-        //     ],
-        // ]);
     }
 }

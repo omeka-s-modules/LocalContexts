@@ -17,16 +17,27 @@
             ],
         ]);
         $html = '';
-        foreach ($this->lc_content as $content) {
-            $html .= "<div class='column check'><input type='checkbox' name='o:lc-content[]' value='" . $this->escapeHtml(json_encode($content)) . "'></div>";
-            $html .= "<img class='column image' src='" . $content['image_url'] . "'>";
-            $html .= "<div class='column text'><div class='name'>" . $content['name'];
-            if (isset($content['language'])) {
-                $html .= "<span class='language'> (" . $content['language'] . ")</span>";
+        foreach ($this->lc_content as $notice_content) {
+            $html .= "<div class='label admin'>";
+            $html .= "<div class='column check'><input type='checkbox' name='o:lc-content[]' value='" . $this->escapeHtml(json_encode($notice_content)) . "'></div>";
+            $html .= "<div class='column content'>";
+            if (isset($notice_content['project_url'])) {
+                $html .= "<a class='name' target='_blank' href=" . $notice_content['project_url'] . ">" . $notice_content['project_title'] . "</a>";
             }
-            $html .= "</div>";
-            $html .= "<div class='description'>" . $content['text'] . "</div></div>"; 
-        } 
+            foreach($notice_content as $key => $content) {
+                if (is_int($key)) {
+                    $html .= "<div class='column description'>";
+                    $html .= "<img class='column image' src='" . $content['image_url'] . "'>";
+                    $html .= "<div class='column text'><div class='name'>" . $content['name'];
+                    if (isset($content['language'])) {
+                        $html .= "<span class='language'> (" . $content['language'] . ")</span>";
+                    }
+                    $html .= "</div>";
+                    $html .= "<div class='description'>" . $content['text'] . "</div></div></div>";
+                }
+            }
+            $html .= "</div></div>"; 
+        }
         echo $html;
         ?>
     </div>
