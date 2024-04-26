@@ -135,7 +135,6 @@ class Module extends AbstractModule
         if ($view->setting('lc_notices')) {
 			$projects = $view->setting('lc_notices');
 			foreach ($projects as $project) {
-                $project = json_decode($project, true);
                 $contentArray[] = $project;
             }
 
@@ -172,7 +171,6 @@ class Module extends AbstractModule
 
 			$lcArray = array();
             foreach ($projects as $project) {
-				$project = json_decode($project, true);
                 // Save each project's content as single select value
                 $lcHtml = '<div class="column content">';
                 if (isset($project['project_url'])) {

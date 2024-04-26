@@ -57,13 +57,17 @@ class IndexController extends AbstractActionController
         // Coming from assign page, assign notices & labels
         if (isset($params['lc-notice'])) {
             foreach ($params['lc-notice'] as $notice) {
-                $noticeArray[] = $notice;
+                $noticeArray[] = json_decode($notice, true);
             }
             
-            // Assign notices to general settings for page block access
+            // Add notices to general settings for page block and item access
+            $currentNotices = $this->settings->get('lc_notices') ?: null;
+            if (isset($currentNotices)) {
+                $noticeArray = array_unique(array_merge($currentNotices, $noticeArray), SORT_REGULAR);
+            }
             $this->settings->set('lc_notices', $noticeArray);
 
-            // Assign notices to site(s)
+            // Add notices to site(s)
             $siteSettings = $this->siteSettings();
             if (isset($params['lc-sites'])) {
                 foreach ($params['lc-sites'] as $site) {

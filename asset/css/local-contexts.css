@@ -1,10 +1,13 @@
-.label, .inputs.localcontexts {
+label {
     display: inline-flex;
-    /* flex-wrap: wrap; */
+    flex-wrap: nowrap;
     align-items: flex-start;
 }
 
 .inputs, .inputs.localcontexts {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
     line-height: unset;
 }
 
