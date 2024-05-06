@@ -218,7 +218,7 @@ class Module extends AbstractModule
         $data = $event->getParam('request')->getContent();
         $propertyAdapter = $adapter->getAdapter('properties');
 
-        if (isset($data['o:lc-content-property'])) {
+        if ($data['o:lc-content-property']) {
             $lcContentProperty = $data['o:lc-content-property'];
         } else {
             // If no metadata value given, do nothing
