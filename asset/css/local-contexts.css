@@ -5,7 +5,6 @@ label {
 }
 
 .inputs, .inputs.localcontexts {
-    display: inline-flex;
     flex-wrap: wrap;
     align-items: flex-start;
     line-height: unset;
@@ -41,7 +40,7 @@ label, .label {
 }
 
 .check {
-    width: 7% !important;
+    width: 5% !important;
     text-align: center !important;
 }
 

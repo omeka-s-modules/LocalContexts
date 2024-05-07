@@ -21,6 +21,25 @@ class Module extends AbstractModule
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
     {    
+        // Add and authorize LC content to Site Settings form
+        $sharedEventManager->attach(
+            'Omeka\Form\SiteSettingsForm',
+            'form.add_elements',
+            [$this, 'addLCSiteSettings']
+        );
+
+        $sharedEventManager->attach(
+            'Omeka\Form\SiteSettingsForm',
+            'form.add_input_filters',
+            function (Event $event) {
+                $inputFilter = $event->getParam('inputFilter');
+                $inputFilter->add([
+                    'name' => 'lc_content_sites',
+                    'required' => false,
+                ]);
+            }
+        );
+
         // Display Local Context Notice/Label in footer of public site pages
         $resources = [
             'Omeka\Controller\Site\Item',
@@ -59,6 +78,16 @@ class Module extends AbstractModule
             'Omeka\Form\ResourceBatchUpdateForm',
             'form.add_elements',
             [$this, 'LCBatchUpdateResource']
+        );
+
+        // Add stylesheet for styling Site Settings form
+        $sharedEventManager->attach(
+            'Omeka\Controller\SiteAdmin\Index',
+            'view.edit.form.before',
+            function (Event $event) {
+                $view = $event->getTarget();
+                $view->headLink()->appendStylesheet($view->assetUrl('css/local-contexts.css', 'LocalContexts'));
+            }
         );
 
         // Add stylesheet for styling BatchUpdate
@@ -112,12 +141,71 @@ class Module extends AbstractModule
         );
     }
 
+    public function addLCSiteSettings(Event $event)
+    {
+        $form = $event->getTarget();
+        $services = $this->getServiceLocator();
+        $settings = $this->getServiceLocator()->get('Omeka\Settings');
+        $siteSettings = $services->get('Omeka\Settings\Site');
+
+        $groups = $form->getOption('element_groups');
+        $groups['local_contexts'] = 'Local Contexts'; // @translate
+        $form->setOption('element_groups', $groups);
+
+        if ($settings->get('lc_notices')) {
+			$projects = $settings->get('lc_notices');
+
+			$lcArray = array();
+            foreach ($projects as $project) {
+                // Save each project's content as single select value
+                $lcHtml = '<div class="column content">';
+                if (isset($project['project_url'])) {
+                    $lcHtml .= "<a class='name' target='_blank' href=" . $project['project_url'] . ">" . $project['project_title'] . "</a>";
+                }
+                foreach($project as $key => $content) {
+                    if (is_int($key)) {
+                        $lcHtml .= '<div class="column description"><img class="column image" src="' . $content['image_url'] .
+                                         '"><div class="column text"><div class="name">' . $content['name'] .
+                                         (isset($content['language']) ? '<span class="language"> (' . $content['language'] . ')</span>' : '') . '</div>' .
+                                         '<div class="description">' . $content['text'] . '</div></div></div>';
+                    }
+                }
+                $lcHtml .= '</div>';
+                $lcArray['label'] = $lcHtml;
+                $lcArray['value'] = json_encode($project);
+                $optionArray[] = $lcArray;
+			}
+
+            $form->add([
+                'name' => 'lc_content_sites',
+                'type' => MultiCheckbox::class,
+                'options' => [
+                    'element_group' => 'local_contexts',
+                    'label' => 'Local Contexts value(s)', // @translate
+                    'info' => 'Local Contexts value(s) to apply to above field.', // @translate
+                    'value_options' => $optionArray,
+                    'label_options' => [
+                        'disable_html_escape' => true,
+                    ],
+                    'label_attributes' => [
+                        'class' => 'label admin',
+                    ],
+                ],
+                'attributes' => [
+                    'value' => $siteSettings->get('lc_content_sites'),
+                    'class' => 'column check',
+                    'required' => false,
+                ],
+            ]);
+        }
+    }
+
     public function addLCSite(Event $event)
     {
         $view = $event->getTarget();
         $siteSettings = $this->getServiceLocator()->get('Omeka\Settings\Site');
-        if (isset($view->site) && $siteSettings->get('local_contexts_notices')) {
-            $projects = $siteSettings->get('local_contexts_notices');
+        if (isset($view->site) && $siteSettings->get('lc_content_sites')) {
+            $projects = $siteSettings->get('lc_content_sites');
             foreach ($projects as $project) {
                 $project = json_decode($project, true);
                 $contentArray[] = $project;
