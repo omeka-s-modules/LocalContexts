@@ -10,44 +10,44 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/local-contexts.css', 'L
 <nav class="section-nav">
     <ul>
         <li class="active"><a href="#assign"><?php echo $this->translate('Assign'); ?></a></li>
-        <li><a href="#notices"><?php echo $this->translate('Notices'); ?></a></li>
+        <li><a href="#remove"><?php echo $this->translate('Remove'); ?></a></li>
     </ul>
 </nav>
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id="assign" class="section active">
-    <?php echo $this->formCollection($form, false); ?>
+    <div class="label"><?php echo $this->translate('Select content to make available for assigning to Sites, Items & page blocks:'); ?></div>
+    <?php foreach($lc_content as $notice_content): ?>
+    <div class="label admin">
+        <div class="column check">
+            <input name="lc-notice[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($notice_content)); ?>">
+        </div>
+        <div class="column content">
+            <?php if (isset($notice_content['project_url'])): ?>
+                <a class="name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($notice_content['project_title']); ?></a>
+            <?php endif; ?>
+            <?php foreach($notice_content as $key => $content): ?>
+                <?php if (is_int($key)): ?>
+                    <div class="column description">
+                        <img class="column image" src="<?php echo($content['image_url']); ?>">
+                        <div class="column text">
+                            <div class="name">
+                                <?php
+                                echo($content['name']);
+                                if (isset($content['language'])) {
+                                    echo '<span class="language"> (' . $content['language'] . ')</span>';
+                                }
+                                ?></div>
+                            <div class="description"><?php echo $content['text']; ?></div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endforeach; ?>
 </fieldset>
 
-<fieldset id="notices" class="section">
-        <?php foreach($lc_content as $notice_content): ?>
-        <div class="label admin">
-            <div class="column check">
-                <input name="lc-notice[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($notice_content)); ?>">
-            </div>
-            <div class="column content">
-                <?php if (isset($notice_content['project_url'])): ?>
-                    <a class="name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($notice_content['project_title']); ?></a>
-                <?php endif; ?>
-                <?php foreach($notice_content as $key => $content): ?>
-                    <?php if (is_int($key)): ?>
-                        <div class="column description">
-                            <img class="column image" src="<?php echo($content['image_url']); ?>">
-                            <div class="column text">
-                                <div class="name">
-                                    <?php 
-                                    echo($content['name']);
-                                    if (isset($content['language'])) {
-                                        echo '<span class="language"> (' . $content['language'] . ')</span>';
-                                    }
-                                    ?></div>
-                                <div class="description"><?php echo $content['text']; ?></div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endforeach; ?>
+<fieldset id="remove" class="section">
 </fieldset>
 <div id="page-actions">
     <button id='index-submit'><?php echo $this->escapeHtml($this->translate('Submit')); ?></button>

@@ -2,7 +2,7 @@
 namespace LocalContexts\Controller;
 
 use LocalContexts\Form\ProjectForm;
-use LocalContexts\Form\AssignForm;
+use Laminas\Form\Form;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Model\ViewModel;
@@ -52,7 +52,7 @@ class IndexController extends AbstractActionController
             }
         }
         
-        $form = $this->getForm(AssignForm::class);
+        $assignForm = new Form();
 
         // Coming from assign page, assign notices & labels
         if (isset($params['lc-notice'])) {
@@ -60,20 +60,12 @@ class IndexController extends AbstractActionController
                 $noticeArray[] = json_decode($notice, true);
             }
             
-            // Add notices to general settings for page block and item access
+            // Add notices to general settings for site/item/page block access
             $currentNotices = $this->settings->get('lc_notices') ?: null;
             if (isset($currentNotices)) {
                 $noticeArray = array_unique(array_merge($currentNotices, $noticeArray), SORT_REGULAR);
             }
             $this->settings->set('lc_notices', $noticeArray);
-
-            // Add notices to site(s)
-            $siteSettings = $this->siteSettings();
-            if (isset($params['lc-sites'])) {
-                foreach ($params['lc-sites'] as $site) {
-                    $siteSettings->set('local_contexts_notices', $noticeArray, $site);
-                }
-            }
         }
         
         $contentArray = [];
@@ -89,7 +81,7 @@ class IndexController extends AbstractActionController
         }
         
         $view->setVariable('lc_content', $contentArray);
-        $view->setVariable('form', $form);
+        $view->setVariable('form', $assignForm);
         return $view;
     }
 
