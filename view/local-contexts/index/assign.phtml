@@ -10,12 +10,14 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/local-contexts.css', 'L
 <nav class="section-nav">
     <ul>
         <li class="active"><a href="#assign"><?php echo $this->translate('Assign'); ?></a></li>
+        <?php if ($lc_assigned): ?>
         <li><a href="#remove"><?php echo $this->translate('Remove'); ?></a></li>
+        <?php endif; ?>
     </ul>
 </nav>
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id="assign" class="section active">
-    <div class="label"><?php echo $this->translate('Select content to make available for assigning to Sites, Items & page blocks:'); ?></div>
+    <div class="label"><?php echo $this->translate('Select content to make available for assignment to Sites, Items & page blocks:'); ?></div>
     <?php foreach($lc_content as $notice_content): ?>
     <div class="label admin">
         <div class="column check">
@@ -47,8 +49,40 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/local-contexts.css', 'L
     <?php endforeach; ?>
 </fieldset>
 
+<?php if ($lc_assigned): ?>
 <fieldset id="remove" class="section">
+    <div class="label"><?php echo $this->translate('Select existing content to remove from assignment list (content already assigned to Sites, Items & page blocks must be manually removed):'); ?></div>
+    <?php foreach($lc_assigned as $remove_content): ?>
+    <div class="label admin">
+        <div class="column check">
+            <input name="lc-remove[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($remove_content)); ?>">
+        </div>
+        <div class="column content">
+            <?php if (isset($remove_content['project_url'])): ?>
+                <a class="name" target="_blank" href="<?php echo($remove_content['project_url']); ?>"><?php echo($remove_content['project_title']); ?></a>
+            <?php endif; ?>
+            <?php foreach($remove_content as $key => $content): ?>
+                <?php if (is_int($key)): ?>
+                    <div class="column description">
+                        <img class="column image" src="<?php echo($content['image_url']); ?>">
+                        <div class="column text">
+                            <div class="name">
+                                <?php
+                                echo($content['name']);
+                                if (isset($content['language'])) {
+                                    echo '<span class="language"> (' . $content['language'] . ')</span>';
+                                }
+                                ?></div>
+                            <div class="description"><?php echo $content['text']; ?></div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endforeach; ?>
 </fieldset>
+<?php endif; ?>
 <div id="page-actions">
     <button id='index-submit'><?php echo $this->escapeHtml($this->translate('Submit')); ?></button>
 </div>

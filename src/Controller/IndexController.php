@@ -54,20 +54,31 @@ class IndexController extends AbstractActionController
         
         $assignForm = new Form();
 
-        // Coming from assign page, assign notices & labels
+        // If LC remove content selected, remove from general settings
+        if (isset($params['lc-remove'])) {
+            foreach ($params['lc-remove'] as $remove) {
+                $removeArray[] = json_decode($remove, true);
+            }
+            $this->removeLCcontent($removeArray);
+        }
+
+        // Get existing LC content from database
+        $assignedArray = $this->settings->get('lc_notices') ?: [];
+
+        // If LC assign content selected, add to general settings for site/item/page block access
         if (isset($params['lc-notice'])) {
             foreach ($params['lc-notice'] as $notice) {
                 $noticeArray[] = json_decode($notice, true);
             }
             
             // Add notices to general settings for site/item/page block access
-            $currentNotices = $this->settings->get('lc_notices') ?: null;
-            if (isset($currentNotices)) {
-                $noticeArray = array_unique(array_merge($currentNotices, $noticeArray), SORT_REGULAR);
+            if (isset($assignedArray)) {
+                $assignedArray = array_unique(array_merge($assignedArray, $noticeArray), SORT_REGULAR);
             }
-            $this->settings->set('lc_notices', $noticeArray);
+            $this->settings->set('lc_notices', $assignedArray);
         }
         
+        // Retrieve project data from Local Contexts API
         $contentArray = [];
         if (!empty($this->settings->get('lc_project_id'))) {
             $projects = explode(',', $this->settings->get('lc_project_id'));
@@ -79,8 +90,9 @@ class IndexController extends AbstractActionController
         } else {
             $contentArray[] = $this->fetchAPIdata();
         }
-        
+
         $view->setVariable('lc_content', $contentArray);
+        $view->setVariable('lc_assigned', $assignedArray);
         $view->setVariable('form', $assignForm);
         return $view;
     }
@@ -128,5 +140,21 @@ class IndexController extends AbstractActionController
             }
         }
         return $assignArray;
+    }
+
+    /**
+     * remove Local Contexts content from settings and any sites/items/pages (if possible)
+     *
+     * @param array $removeArray
+     */
+    protected function removeLCcontent($removeArray)
+    {
+        // Get existing LC content from settings
+        $currentLCcontent = $this->settings->get('lc_notices') ?: [];
+
+        // Build new array without removeArray content and save to settings
+        $diff = array_diff(array_map('json_encode', $currentLCcontent), array_map('json_encode', $removeArray));
+        $newLCcontent = array_map(function ($json) { return json_decode($json, true); }, $diff);
+        $this->settings->set('lc_notices', $newLCcontent);
     }
 }

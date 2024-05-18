@@ -25,16 +25,15 @@ class LocalContexts extends AbstractBlockLayout
 	public function form(PhpRenderer $view, SiteRepresentation $site,
         SitePageRepresentation $page = null, SitePageBlockRepresentation $block = null
     ) {
-        if ($view->setting('lc_notices')) {        
+        if ($view->setting('lc_notices')) {
             $projects = $view->setting('lc_notices');
             foreach ($projects as $project) {
-                $project = json_decode($project, true);
                 if (isset($project['project_title'])) {
                     $projectName = $project['project_title'];
                 } elseif (isset($project['project_url'])) {
                     $projectName = $project['project_url'];
                 } elseif ($project[0]['name'] == 'Open to Collaborate Notice') {
-                    $projectName = 'Open to Collaborate notice';
+                    $projectName = 'Open to Collaborate Notice';
                 } else {
                     $projectName = '[no project title]';
                 }
@@ -66,9 +65,9 @@ class LocalContexts extends AbstractBlockLayout
 		if ($view->setting('lc_notices')) {
 			$projects = $view->setting('lc_notices');
 			foreach ($projects as $project) {
-				$project = json_decode($project, true);
-				if ((isset($project['project_title']) && $project['project_title'] == $localContextContent) || $project[0]['name'] == 'Open to Collaborate Notice') {
+				if ((isset($project['project_title']) && $project['project_title'] == $localContextContent) || $project[0]['name'] == $localContextContent) {
                     $contentArray = $project;
+                    break;
                 } else {
                     $contentArray = [];
                 }

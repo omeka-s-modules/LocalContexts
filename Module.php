@@ -152,11 +152,17 @@ class Module extends AbstractModule
         $groups['local_contexts'] = 'Local Contexts'; // @translate
         $form->setOption('element_groups', $groups);
 
-        if ($settings->get('lc_notices')) {
-			$projects = $settings->get('lc_notices');
+        if ($settings->get('lc_notices') || $siteSettings->get('lc_content_sites')) {
+            // Combine available general settings projects with existing site settings projects
+            $projects = $settings->get('lc_notices') ? $settings->get('lc_notices'): [];
+            if ($siteSettings->get('lc_content_sites')) {
+                foreach($siteSettings->get('lc_content_sites') as $siteProject) {
+                    $projects[] = json_decode($siteProject, true);
+                }
+            }
 
 			$lcArray = array();
-            foreach ($projects as $project) {
+            foreach (array_unique($projects, SORT_REGULAR) as $key => $project) {
                 // Save each project's content as single select value
                 $lcHtml = '<div class="column content">';
                 if (isset($project['project_url'])) {
@@ -192,6 +198,7 @@ class Module extends AbstractModule
                     ],
                 ],
                 'attributes' => [
+                    'value' => json_encode($siteProjects),
                     'value' => $siteSettings->get('lc_content_sites'),
                     'class' => 'column check',
                     'required' => false,
