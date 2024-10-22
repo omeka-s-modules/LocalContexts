@@ -198,7 +198,6 @@ class Module extends AbstractModule
                     ],
                 ],
                 'attributes' => [
-                    'value' => json_encode($siteProjects),
                     'value' => $siteSettings->get('lc_content_sites'),
                     'class' => 'column check',
                     'required' => false,
@@ -313,7 +312,7 @@ class Module extends AbstractModule
         $data = $event->getParam('request')->getContent();
         $propertyAdapter = $adapter->getAdapter('properties');
 
-        if ($data['o:lc-content-property']) {
+        if (isset($data['o:lc-content-property'])) {
             $lcContentProperty = $data['o:lc-content-property'];
         } else {
             // If no metadata value given, do nothing
