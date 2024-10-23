@@ -106,10 +106,10 @@ class IndexController extends AbstractActionController
     {
         // If project ID(s) given, retrieve specific project notices
         if (!empty($projectID)) {
-            $APIProjectURL = 'https://localcontextshub.org/api/v1/projects/' . $projectID;
+            $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v1/projects/' . $projectID;
         } else {
             // If not, retrieve generic 'Open to Collaborate' notice
-            $collaborateURL = 'https://localcontextshub.org/api/v1/notices/open_to_collaborate';
+            $collaborateURL = 'https://sandbox.localcontextshub.org/api/v1/notices/open_to_collaborate';
             $this->client->setUri($collaborateURL);
             $response = $this->client->send();
             $collaborateMetadata = json_decode($response->getBody(), true);

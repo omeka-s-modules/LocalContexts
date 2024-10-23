@@ -30,24 +30,4 @@ class LCEntity extends AbstractEntity
     {
         return $this->id;
     }
-
-    public function setItem(Item $item)
-    {
-        $this->item = $item;
-    }
-
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    public function setPID($pid)
-    {
-        $this->pid = $pid;
-    }
-
-    public function getPID()
-    {
-        return $this->pid;
-    }
 }
