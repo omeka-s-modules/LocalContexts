@@ -6,6 +6,8 @@ use Laminas\Form\Form;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Model\ViewModel;
+use Laminas\Http\Request;
+use Laminas\Http\Client;
 use Omeka\Api\Exception as ApiException;
 use Omeka\Settings\Settings;
 use Omeka\Stdlib\Message;
@@ -80,15 +82,18 @@ class IndexController extends AbstractActionController
         
         // Retrieve project data from Local Contexts API
         $contentArray = [];
-        if (!empty($this->settings->get('lc_project_id'))) {
-            $projects = explode(',', $this->settings->get('lc_project_id'));
-            // Display 'Open to Collaborate' notice along with all projects
-            $contentArray[] = $this->fetchAPIdata();
-            foreach ($projects as $projectID) {
-                $contentArray[] = $this->fetchAPIdata(trim($projectID));
+        // Only retrieve API content if given API key
+        if (isset($params['lc_api_key'])) {
+            if (!empty($this->settings->get('lc_project_id'))) {
+                $projects = explode(',', $this->settings->get('lc_project_id'));
+                // Display 'Open to Collaborate' notice along with all projects
+                $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
+                foreach ($projects as $projectID) {
+                    $contentArray[] = $this->fetchAPIdata($params['lc_api_key'], trim($projectID));
+                }
+            } else {
+                $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
             }
-        } else {
-            $contentArray[] = $this->fetchAPIdata();
         }
 
         $view->setVariable('lc_content', $contentArray);
@@ -102,16 +107,41 @@ class IndexController extends AbstractActionController
      *
      * @param string $projectID
      */
-    protected function fetchAPIdata($projectID = null)
+    protected function fetchAPIdata($apiKey, $projectID = null)
     {
+        
         // If project ID(s) given, retrieve specific project notices
         if (!empty($projectID)) {
-            $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v1/projects/' . $projectID;
+            $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v2/projects/multi' . $projectID;
         } else {
             // If not, retrieve generic 'Open to Collaborate' notice
-            $collaborateURL = 'https://sandbox.localcontextshub.org/api/v1/notices/open_to_collaborate';
-            $this->client->setUri($collaborateURL);
-            $response = $this->client->send();
+            $collaborateURL = 'https://sandbox.localcontextshub.org/api/v2/notices/open_to_collaborate';
+            // $request = $this->client->setUri($collaborateURL);
+            // $request = $this->client
+            //     ->setUri($collaborateURL)
+            //     ->setMethod('GET');
+            // $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
+            // $this->client->getRequest()->getHeaders()->addHeaderLine('x-api-key: ' . $apiKey);
+            // $this->client->setHeaders(['x-api-key' => $apiKey]);
+            $writer = new \Laminas\Log\Writer\Stream('logs/application.log');
+            $logger = new \Laminas\Log\Logger();
+            $logger->addWriter($writer);
+            // $logger->info($this->client->getRequest()->getHeaders()->toString());
+            // $headers = $request->getHeaders();
+            // $headers->addHeaderLine('x-api-key', $apiKey);
+            $request = new Request;
+            $httpClient = new Client;
+            $request->setUri($collaborateURL);
+            // $request->getRequest()->getHeaders()->addHeaderLine('x-api-key', $apiKey);
+            // $request->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
+            $request->getHeaders()->addHeaderLine('x-api-key', $apiKey);
+            $logger->info($request->getHeaders()->toString());
+            // $response = $this->client->setUri($collaborateURL)->send();
+            $response = $httpClient->send($request);
+            // $response = $request->send();
+            $logger->info($request->getHeaders()->toString());
+            $logger->info($response->getBody());
+            $projectMetadata = json_decode($response->getBody(), true);
             $collaborateMetadata = json_decode($response->getBody(), true);
             $noticeArray['name'] = $collaborateMetadata['name'];
             $noticeArray['image_url'] = $collaborateMetadata['img_url'];
@@ -119,24 +149,27 @@ class IndexController extends AbstractActionController
             $assignArray[] = $noticeArray;
             return $assignArray;
         }
-        $this->client->setUri($APIProjectURL);
-        $response = $this->client->send();
-        $projectMetadata = json_decode($response->getBody(), true);
+        $request = $this->client->setUri($APIProjectURL);
+        $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
+        // $this->client->setHeaders(['x-api-key' => $apiKey]);
+        $response = $request->send();
 
         $assignArray['project_url'] = $projectMetadata['project_page'] ?: null;
         $assignArray['project_title'] = $projectMetadata['title'] ?: null;
-        foreach ($projectMetadata['notice'] as $notice) {
-            $noticeArray['name'] = $notice['name'];
-            $noticeArray['image_url'] = $notice['img_url'];
-            $noticeArray['text'] = $notice['default_text'];
-            $assignArray[] = $noticeArray;
-            if ($notice['translations']) {
-                $noticeArray['name'] = $notice['translations'][0]['translated_name'];
+        if (isset($projectMetadata['notice'])) {
+            foreach ($projectMetadata['notice'] as $notice) {
+                $noticeArray['name'] = $notice['name'];
                 $noticeArray['image_url'] = $notice['img_url'];
-                $noticeArray['text'] = $notice['translations'][0]['translated_text'];
-                $noticeArray['language'] = $notice['translations'][0]['language'];
+                $noticeArray['text'] = $notice['default_text'];
                 $assignArray[] = $noticeArray;
-                $noticeArray = array();
+                if ($notice['translations']) {
+                    $noticeArray['name'] = $notice['translations'][0]['translated_name'];
+                    $noticeArray['image_url'] = $notice['img_url'];
+                    $noticeArray['text'] = $notice['translations'][0]['translated_text'];
+                    $noticeArray['language'] = $notice['translations'][0]['language'];
+                    $assignArray[] = $noticeArray;
+                    $noticeArray = array();
+                }
             }
         }
         return $assignArray;
