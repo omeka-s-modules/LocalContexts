@@ -109,53 +109,31 @@ class IndexController extends AbstractActionController
      */
     protected function fetchAPIdata($apiKey, $projectID = null)
     {
-        
         // If project ID(s) given, retrieve specific project notices
         if (!empty($projectID)) {
-            $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v2/projects/multi' . $projectID;
+            $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v2/projects/' . $projectID . '/';
         } else {
             // If not, retrieve generic 'Open to Collaborate' notice
-            $collaborateURL = 'https://sandbox.localcontextshub.org/api/v2/notices/open_to_collaborate';
-            // $request = $this->client->setUri($collaborateURL);
-            // $request = $this->client
-            //     ->setUri($collaborateURL)
-            //     ->setMethod('GET');
-            // $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
-            // $this->client->getRequest()->getHeaders()->addHeaderLine('x-api-key: ' . $apiKey);
-            // $this->client->setHeaders(['x-api-key' => $apiKey]);
-            $writer = new \Laminas\Log\Writer\Stream('logs/application.log');
-            $logger = new \Laminas\Log\Logger();
-            $logger->addWriter($writer);
-            // $logger->info($this->client->getRequest()->getHeaders()->toString());
-            // $headers = $request->getHeaders();
-            // $headers->addHeaderLine('x-api-key', $apiKey);
-            $request = new Request;
-            $httpClient = new Client;
-            $request->setUri($collaborateURL);
-            // $request->getRequest()->getHeaders()->addHeaderLine('x-api-key', $apiKey);
-            // $request->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
-            $request->getHeaders()->addHeaderLine('x-api-key', $apiKey);
-            $logger->info($request->getHeaders()->toString());
-            // $response = $this->client->setUri($collaborateURL)->send();
-            $response = $httpClient->send($request);
-            // $response = $request->send();
-            $logger->info($request->getHeaders()->toString());
-            $logger->info($response->getBody());
-            $projectMetadata = json_decode($response->getBody(), true);
+            $collaborateURL = 'https://sandbox.localcontextshub.org/api/v2/notices/open_to_collaborate/';
+
+            $request = $this->client->setUri($collaborateURL);
+            $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
+            $response = $request->send();
+
             $collaborateMetadata = json_decode($response->getBody(), true);
-            $noticeArray['name'] = $collaborateMetadata['name'];
-            $noticeArray['image_url'] = $collaborateMetadata['img_url'];
-            $noticeArray['text'] = $collaborateMetadata['default_text'];
+            $noticeArray['name'] = isset($collaborateMetadata['notice']['name']) ? $collaborateMetadata['notice']['name'] : null;
+            $noticeArray['image_url'] = isset($collaborateMetadata['notice']['img_url']) ? $collaborateMetadata['notice']['img_url'] : null;
+            $noticeArray['text'] = isset($collaborateMetadata['notice']['default_text']) ? $collaborateMetadata['notice']['default_text'] : null;
             $assignArray[] = $noticeArray;
             return $assignArray;
         }
         $request = $this->client->setUri($APIProjectURL);
         $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
-        // $this->client->setHeaders(['x-api-key' => $apiKey]);
         $response = $request->send();
+        $projectMetadata = json_decode($response->getBody(), true);
 
-        $assignArray['project_url'] = $projectMetadata['project_page'] ?: null;
-        $assignArray['project_title'] = $projectMetadata['title'] ?: null;
+        $assignArray['project_url'] = isset($projectMetadata['project_page']) ? $projectMetadata['project_page'] : null;
+        $assignArray['project_title'] = isset($projectMetadata['title']) ? $projectMetadata['title'] : null;
         if (isset($projectMetadata['notice'])) {
             foreach ($projectMetadata['notice'] as $notice) {
                 $noticeArray['name'] = $notice['name'];
