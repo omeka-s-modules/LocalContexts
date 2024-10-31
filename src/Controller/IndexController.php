@@ -96,6 +96,11 @@ class IndexController extends AbstractActionController
             }
         }
 
+        // Redirect to index page if no content to display
+        if (empty($contentArray) && empty($assignedArray)) {
+            return $this->redirect()->toRoute('admin/local-contexts');
+        }
+        
         $view->setVariable('lc_content', $contentArray);
         $view->setVariable('lc_assigned', $assignedArray);
         $view->setVariable('form', $assignForm);
