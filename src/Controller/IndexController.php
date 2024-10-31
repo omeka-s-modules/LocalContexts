@@ -79,11 +79,11 @@ class IndexController extends AbstractActionController
             }
             $this->settings->set('lc_notices', $assignedArray);
         }
-        
+
         // Retrieve project data from Local Contexts API
         $contentArray = [];
         // Only retrieve API content if given API key
-        if (isset($params['lc_api_key'])) {
+        if (!empty($params['lc_api_key'])) {
             if (!empty($this->settings->get('lc_project_id'))) {
                 $projects = explode(',', $this->settings->get('lc_project_id'));
                 // Display 'Open to Collaborate' notice along with all projects

@@ -3,54 +3,60 @@ $form->prepare();
 $this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
 $escapeHtml = $this->plugin('escapeHtml');
 $this->headLink()->appendStylesheet($this->assetUrl('css/local-contexts.css', 'LocalContexts'));
+$contentClass = $lc_content ? "active" : "";
+$assignedClass = $lc_assigned ? "active" : "";
 ?>
 
 <?php echo $this->pageTitle($this->translate('Assign Notices & Labels'), 1, $this->translate('Local Contexts')); ?>
 
 <nav class="section-nav">
     <ul>
-        <li class="active"><a href="#assign"><?php echo $this->translate('Assign'); ?></a></li>
+        <?php if ($lc_content): ?>
+        <li class="<?php echo $contentClass ?>"><a href="#assign"><?php echo $this->translate('Assign'); ?></a></li>
+        <?php endif; ?>
         <?php if ($lc_assigned): ?>
-        <li><a href="#remove"><?php echo $this->translate('Remove'); ?></a></li>
+        <li class="<?php echo $assignedClass ?>"><a href="#remove"><?php echo $this->translate('Remove'); ?></a></li>
         <?php endif; ?>
     </ul>
 </nav>
 <?php echo $this->form()->openTag($form); ?>
-<fieldset id="assign" class="section active">
+<?php if ($lc_content): ?>
+<fieldset id="assign" class="section <?php echo $contentClass ?>">
     <div class="label"><?php echo $this->translate('Select content to make available for assignment to Sites, Items & page blocks:'); ?></div>
-    <?php foreach($lc_content as $notice_content): ?>
-    <div class="label admin">
-        <div class="column check">
-            <input name="lc-notice[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($notice_content)); ?>">
-        </div>
-        <div class="column content">
-            <?php if (isset($notice_content['project_url'])): ?>
-                <a class="name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($notice_content['project_title']); ?></a>
-            <?php endif; ?>
-            <?php foreach($notice_content as $key => $content): ?>
-                <?php if (is_int($key)): ?>
-                    <div class="column description">
-                        <img class="column image" src="<?php echo($content['image_url']); ?>">
-                        <div class="column text">
-                            <div class="name">
-                                <?php
-                                echo($content['name']);
-                                if (isset($content['language'])) {
-                                    echo '<span class="language"> (' . $content['language'] . ')</span>';
-                                }
-                                ?></div>
-                            <div class="description"><?php echo $content['text']; ?></div>
-                        </div>
-                    </div>
+        <?php foreach($lc_content as $notice_content): ?>
+        <div class="label admin">
+            <div class="column check">
+                <input name="lc-notice[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($notice_content)); ?>">
+            </div>
+            <div class="column content">
+                <?php if (isset($notice_content['project_url'])): ?>
+                    <a class="name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($notice_content['project_title']); ?></a>
                 <?php endif; ?>
-            <?php endforeach; ?>
+                <?php foreach($notice_content as $key => $content): ?>
+                    <?php if (is_int($key)): ?>
+                        <div class="column description">
+                            <img class="column image" src="<?php echo($content['image_url']); ?>">
+                            <div class="column text">
+                                <div class="name">
+                                    <?php
+                                    echo($content['name']);
+                                    if (isset($content['language'])) {
+                                        echo '<span class="language"> (' . $content['language'] . ')</span>';
+                                    }
+                                    ?></div>
+                                <div class="description"><?php echo $content['text']; ?></div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
 </fieldset>
+<?php endif; ?>
 
 <?php if ($lc_assigned): ?>
-<fieldset id="remove" class="section">
+<fieldset id="remove" class="section <?php echo $assignedClass ?>">
     <div class="label"><?php echo $this->translate('Select existing content to remove from assignment list (content already assigned to Sites, Items & page blocks must be manually removed):'); ?></div>
     <?php foreach($lc_assigned as $remove_content): ?>
     <div class="label admin">
