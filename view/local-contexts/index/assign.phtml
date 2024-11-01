@@ -3,24 +3,28 @@ $form->prepare();
 $this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
 $escapeHtml = $this->plugin('escapeHtml');
 $this->headLink()->appendStylesheet($this->assetUrl('css/local-contexts.css', 'LocalContexts'));
-$contentClass = $lc_content ? "active" : "";
-$assignedClass = $lc_assigned ? "active" : "";
+$contentClass = isset($lc_content) ? "active" : "";
+$assignedClass = isset($lc_assigned) ? "active" : "";
+// If new content AND assigned content, make new content active tab
+if (isset($lc_content) && isset($lc_assigned)) {
+    $assignedClass = "";
+}
 ?>
 
 <?php echo $this->pageTitle($this->translate('Assign Notices & Labels'), 1, $this->translate('Local Contexts')); ?>
 
 <nav class="section-nav">
     <ul>
-        <?php if ($lc_content): ?>
+        <?php if (isset($lc_content)): ?>
         <li class="<?php echo $contentClass ?>"><a href="#assign"><?php echo $this->translate('Assign'); ?></a></li>
         <?php endif; ?>
-        <?php if ($lc_assigned): ?>
+        <?php if (isset($lc_assigned)): ?>
         <li class="<?php echo $assignedClass ?>"><a href="#remove"><?php echo $this->translate('Remove'); ?></a></li>
         <?php endif; ?>
     </ul>
 </nav>
 <?php echo $this->form()->openTag($form); ?>
-<?php if ($lc_content): ?>
+<?php if (isset($lc_content)): ?>
 <fieldset id="assign" class="section <?php echo $contentClass ?>">
     <div class="label"><?php echo $this->translate('Select content to make available for assignment to Sites, Items & page blocks:'); ?></div>
         <?php foreach($lc_content as $notice_content): ?>
@@ -55,7 +59,7 @@ $assignedClass = $lc_assigned ? "active" : "";
 </fieldset>
 <?php endif; ?>
 
-<?php if ($lc_assigned): ?>
+<?php if (isset($lc_assigned)): ?>
 <fieldset id="remove" class="section <?php echo $assignedClass ?>">
     <div class="label"><?php echo $this->translate('Select existing content to remove from assignment list (content already assigned to Sites, Items & page blocks must be manually removed):'); ?></div>
     <?php foreach($lc_assigned as $remove_content): ?>

@@ -94,15 +94,21 @@ class IndexController extends AbstractActionController
             } else {
                 $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
             }
+            $contentArray = array_filter($contentArray);
         }
 
         // Redirect to index page if no content to display
         if (empty($contentArray) && empty($assignedArray)) {
             return $this->redirect()->toRoute('admin/local-contexts');
+        } else if (empty($contentArray) && !empty($assignedArray)) {
+            $view->setVariable('lc_assigned', $assignedArray);
+        } else if (!empty($contentArray) && empty($assignedArray)) {
+            $view->setVariable('lc_assigned', $contentArray);
+        } else {
+            $view->setVariable('lc_content', $contentArray);
+            $view->setVariable('lc_assigned', $assignedArray);
         }
-        
-        $view->setVariable('lc_content', $contentArray);
-        $view->setVariable('lc_assigned', $assignedArray);
+
         $view->setVariable('form', $assignForm);
         return $view;
     }
@@ -114,6 +120,7 @@ class IndexController extends AbstractActionController
      */
     protected function fetchAPIdata($apiKey, $projectID = null)
     {
+
         // If project ID(s) given, retrieve specific project notices
         if (!empty($projectID)) {
             $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v2/projects/' . $projectID . '/';
@@ -124,6 +131,9 @@ class IndexController extends AbstractActionController
             $request = $this->client->setUri($collaborateURL);
             $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
             $response = $request->send();
+            if (!$response->isSuccess()) {
+                return;
+            }
 
             $collaborateMetadata = json_decode($response->getBody(), true);
             $noticeArray['name'] = isset($collaborateMetadata['notice']['name']) ? $collaborateMetadata['notice']['name'] : null;
@@ -135,6 +145,9 @@ class IndexController extends AbstractActionController
         $request = $this->client->setUri($APIProjectURL);
         $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
         $response = $request->send();
+        if (!$response->isSuccess()) {
+            return;
+        }
         $projectMetadata = json_decode($response->getBody(), true);
 
         $assignArray['project_url'] = isset($projectMetadata['project_page']) ? $projectMetadata['project_page'] : null;
