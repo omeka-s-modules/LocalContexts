@@ -36,7 +36,6 @@ return [
     'form_elements' => [
         'invokables' => [
             'LocalContexts\Form\ProjectForm' => 'LocalContexts\Form\ProjectForm',
-            'LocalContexts\Form\AssignForm' => 'LocalContexts\Form\AssignForm',
         ],
     ],
     'router' => [
