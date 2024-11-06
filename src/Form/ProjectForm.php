@@ -26,6 +26,18 @@ class ProjectForm extends Form
         ]);
 
         $this->add([
+            'name' => 'lc_institution_id',
+            'type' => 'text',
+            'options' => [
+                'label' => 'Local Contexts Institution ID', // @translate
+                'info' => 'Optional. Input Institution ID to retrieve all associated projects from Local Contexts Hub (this takes precedence over individual project IDs below).', // @translate
+            ],
+            'attributes' => [
+                'id' => 'lc-institution-id',
+            ],
+        ]);
+
+        $this->add([
             'name' => 'lc_project_id',
             'type' => 'text',
             'options' => [

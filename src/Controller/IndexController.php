@@ -31,7 +31,11 @@ class IndexController extends AbstractActionController
     {
         $view = new ViewModel;
         $form = $this->getForm(ProjectForm::class);
-        
+
+        if ($this->settings->get('lc_institution_id')) {
+            $form->setData(['lc_institution_id' => $this->settings->get('lc_institution_id')]);
+        }
+
         if ($this->settings->get('lc_project_id')) {        
             $form->setData(['lc_project_id' => $this->settings->get('lc_project_id')]);       
         }
@@ -49,6 +53,9 @@ class IndexController extends AbstractActionController
         $form->setData($params);
         if ($form->isValid()) {
             $formData = $form->getData();
+            if (isset($formData['lc_institution_id'])) {
+                $this->settings->set('lc_institution_id', $formData['lc_institution_id']);
+            }
             if (isset($formData['lc_project_id'])) {
                 $this->settings->set('lc_project_id', $formData['lc_project_id']);
             }
@@ -84,9 +91,22 @@ class IndexController extends AbstractActionController
         $contentArray = [];
         // Only retrieve API content if given API key
         if (!empty($params['lc_api_key'])) {
-            if (!empty($this->settings->get('lc_project_id'))) {
+            if (!empty($this->settings->get('lc_institution_id'))) {
+                // Display 'Open to Collaborate' notice along with all institution projects
+                $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
+                $institutionURL = 'https://sandbox.localcontextshub.org/api/v2/projects/?institution_id=' . $this->settings->get('lc_institution_id');
+                $request = $this->client->setUri($institutionURL);
+                $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $params['lc_api_key']]);
+                $response = $request->send();
+                if ($response->isSuccess()) {
+                    $institutionMetadata = json_decode($response->getBody(), true);
+                    foreach ($institutionMetadata['results'] as $project) {
+                        $contentArray[] = $this->fetchAPIdata($params['lc_api_key'], $project['unique_id']);
+                    }
+                }
+            } else if (!empty($this->settings->get('lc_project_id'))) {
                 $projects = explode(',', $this->settings->get('lc_project_id'));
-                // Display 'Open to Collaborate' notice along with all projects
+                // Display 'Open to Collaborate' notice along with all given projects
                 $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
                 foreach ($projects as $projectID) {
                     $contentArray[] = $this->fetchAPIdata($params['lc_api_key'], trim($projectID));
@@ -121,8 +141,8 @@ class IndexController extends AbstractActionController
     protected function fetchAPIdata($apiKey, $projectID = null)
     {
 
-        // If project ID(s) given, retrieve specific project notices
         if (!empty($projectID)) {
+            // If project ID(s) given, retrieve specific project notices
             $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v2/projects/' . $projectID . '/';
         } else {
             // If not, retrieve generic 'Open to Collaborate' notice
@@ -142,6 +162,7 @@ class IndexController extends AbstractActionController
             $assignArray[] = $noticeArray;
             return $assignArray;
         }
+
         $request = $this->client->setUri($APIProjectURL);
         $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
         $response = $request->send();
