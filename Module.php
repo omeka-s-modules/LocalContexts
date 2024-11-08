@@ -342,9 +342,25 @@ class Module extends AbstractModule
                 $value->setProperty($property);
                 $textValue = '';
                 $textValue .= $content['name'];
-                $textValue .= isset($content['language']) ? ' (' . $content['language'] . ')' : '';
                 $textValue .= ': ' . $content['text'];
                 $value->setValue($textValue);
+                // Switch to localization language tags
+                if (isset($content['language'])) {
+                    $langTagArray = array(
+                        'French' => 'fr',
+                        'Spanish' => 'es',
+                        'Māori' => 'mi'
+                    );
+                    if (array_key_exists($content['language'], $langTagArray)) {
+                        $langStr = $langTagArray[$content['language']];
+                    } else {
+                        $langStr = 'en-US';
+                    }
+                } else {
+                    // Set English by default
+                    $langStr = 'en-US';
+                }
+                $value->setLang($langStr);
                 $resourceValues->add($value);
             }
         }

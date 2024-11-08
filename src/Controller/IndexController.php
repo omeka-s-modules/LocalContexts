@@ -180,12 +180,14 @@ class IndexController extends AbstractActionController
                 $noticeArray['text'] = $notice['default_text'];
                 $assignArray[] = $noticeArray;
                 if ($notice['translations']) {
-                    $noticeArray['name'] = $notice['translations'][0]['translated_name'];
-                    $noticeArray['image_url'] = $notice['img_url'];
-                    $noticeArray['text'] = $notice['translations'][0]['translated_text'];
-                    $noticeArray['language'] = $notice['translations'][0]['language'];
-                    $assignArray[] = $noticeArray;
-                    $noticeArray = array();
+                    foreach ($notice['translations'] as $translation) {
+                        $noticeArray['name'] = $translation['translated_name'];
+                        $noticeArray['image_url'] = $notice['img_url'];
+                        $noticeArray['text'] = $translation['translated_text'];
+                        $noticeArray['language'] = $translation['language'];
+                        $assignArray[] = $noticeArray;
+                        $noticeArray = array();
+                    }
                 }
             }
         }
