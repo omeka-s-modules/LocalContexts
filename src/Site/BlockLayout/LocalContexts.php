@@ -40,14 +40,27 @@ class LocalContexts extends AbstractBlockLayout
 				$projectArray[$projectName] = $projectName;
 			}
 	
-			$setLocalContexts = $block ? $block->dataValue('localContexts') : '';
-	        $select = new Select('o:block[__blockIndex__][o:data][localContexts]');
-	        $select->setValueOptions($projectArray)->setValue($setLocalContexts);
+			$setLC = $block ? $block->dataValue('localContexts') : '';
+	        $selectLC = new Select('o:block[__blockIndex__][o:data][localContexts]');
+	        $selectLC->setValueOptions($projectArray)->setValue($setLC);
+            $setLanguage = $block ? $block->dataValue('language') : 'en-US';
+            $selectLanguage = new Select('o:block[__blockIndex__][o:data][language]');
+            $languageArray = array(
+                'English' => 'English',
+                'French' => 'French',
+                'Spanish' => 'Spanish',
+                'Māori' => 'Māori'
+            );
+	        $selectLanguage->setValueOptions($languageArray)->setValue($setLanguage);
 
 	        $html = '<div class="field">';
-	        $html .= '<div class="field-meta"><label>' . $view->translate('Local Contexts project name') . '</label></div>';
-	        $html .= '<div class="inputs">' . $view->formSelect($select) . '</div>';
+	        $html .= '<div class="field-meta"><label>' . $view->translate('LC project name') . '</label></div>';
+	        $html .= '<div class="inputs">' . $view->formSelect($selectLC) . '</div>';
+	        $html .= '</div><div class="field">';
+	        $html .= '<div class="field-meta"><label>' . $view->translate('Language') . '</label></div>';
+	        $html .= '<div class="inputs">' . $view->formSelect($selectLanguage) . '</div>';
 	        $html .= '</div>'; 
+
         } else {
 			$html = '<div>No Local Contexts content set.</div>';
 		}
@@ -61,12 +74,24 @@ class LocalContexts extends AbstractBlockLayout
 		if (!$localContextContent) {
             return '';
         }
+        $localContextLanguage = $block->dataValue('language');
 		
 		if ($view->setting('lc_notices')) {
 			$projects = $view->setting('lc_notices');
 			foreach ($projects as $project) {
 				if ((isset($project['project_title']) && $project['project_title'] == $localContextContent) || $project[0]['name'] == $localContextContent) {
-                    $contentArray = $project;
+                    $contentArray = array();
+                    $contentArray['project_title'] = isset($project['project_title']) ? $project['project_title'] : '';
+                    $contentArray['project_url'] = isset($project['project_url']) ? $project['project_url'] : '';
+                    foreach ($project as $key => $notice) {
+                        if (is_int($key)) {
+                            if (isset($notice['language']) && ($notice['language'] == $localContextLanguage)) {
+                                $contentArray[] = $notice;
+                            } elseif (!isset($notice['language']) && $localContextLanguage == 'English') {
+                                $contentArray[] = $notice;
+                            }
+                        }
+                    }
                     break;
                 } else {
                     $contentArray = [];
