@@ -14,11 +14,11 @@ $(document).ready( function() {
         }
         $html .= "</div>";
         if (isset($content['project_url'])) {
-            $html .= "<div class='project-link'>";
+            $html .= "<nav class='project-link'>";
             $html .= "<span>" . $translate('Local Contexts project link: ') . "</span>";
             $html .= "<a target='_blank' href=" . $content['project_url'] . ">" . $content['project_title'] . "</a>";
-            $html .= "</div>";
-        } 
+            $html .= "</nav>";
+        }
     }
     ?>
     $('footer').prepend("<?php echo $html ?>");

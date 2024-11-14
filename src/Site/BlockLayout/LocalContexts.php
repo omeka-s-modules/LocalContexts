@@ -57,7 +57,7 @@ class LocalContexts extends AbstractBlockLayout
 	        $html .= '<div class="field-meta"><label>' . $view->translate('LC project name') . '</label></div>';
 	        $html .= '<div class="inputs">' . $view->formSelect($selectLC) . '</div>';
 	        $html .= '</div><div class="field">';
-	        $html .= '<div class="field-meta"><label>' . $view->translate('Language') . '</label></div>';
+	        $html .= '<div class="field-meta"><label>' . $view->translate('LC Language') . '</label></div>';
 	        $html .= '<div class="inputs">' . $view->formSelect($selectLanguage) . '</div>';
 	        $html .= '</div>'; 
 

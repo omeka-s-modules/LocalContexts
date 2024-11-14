@@ -9,6 +9,7 @@ use Omeka\Form\Element\PropertySelect;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\Form\Fieldset;
+use Laminas\Form\Element;
 use Laminas\Form\Element\MultiCheckbox;
 use Laminas\EventManager\Event;
 
@@ -35,6 +36,10 @@ class Module extends AbstractModule
                 $inputFilter = $event->getParam('inputFilter');
                 $inputFilter->add([
                     'name' => 'lc_content_sites',
+                    'required' => false,
+                ]);
+                $inputFilter->add([
+                    'name' => 'lc_language',
                     'required' => false,
                 ]);
             }
@@ -183,6 +188,26 @@ class Module extends AbstractModule
 			}
 
             $form->add([
+                'name' => 'lc_language',
+                'type' => Element\Select::class,
+                'options' => [
+                    'element_group' => 'local_contexts',
+                    'label' => 'Local Contexts Language', // @translate
+                    'info' => 'Only display content in selected language (Note: must already be generated and retrieved from LC Hub).', // @translate
+                    'value_options' => [
+                        'English' => 'English', // @translate
+                        'French' => 'French', // @translate
+                        'Spanish' => 'Spanish', // @translate
+                        'Māori' => 'Māori', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'value' => $siteSettings->get('lc_language') ?: 'English',
+                    'required' => false,
+                ],
+            ]);
+
+            $form->add([
                 'name' => 'lc_content_sites',
                 'type' => MultiCheckbox::class,
                 'options' => [
@@ -212,9 +237,29 @@ class Module extends AbstractModule
         $siteSettings = $this->getServiceLocator()->get('Omeka\Settings\Site');
         if (isset($view->site) && $siteSettings->get('lc_content_sites')) {
             $projects = $siteSettings->get('lc_content_sites');
+            $localContextLanguage = $siteSettings->get('lc_language');
+            $contentArray = array();
             foreach ($projects as $project) {
                 $project = json_decode($project, true);
-                $contentArray[] = $project;
+                $projectArray = array();
+
+                if (isset($project['project_title'])) {
+                    $projectArray['project_title'] = $project['project_title'];
+                }
+                if (isset($project['project_url'])) {
+                    $projectArray['project_url'] = $project['project_url'];
+                }
+
+                foreach ($project as $key => $notice) {
+                    if (is_int($key)) {
+                        if (isset($notice['language']) && ($notice['language'] == $localContextLanguage)) {
+                            $projectArray[] = $notice;
+                        } elseif (!isset($notice['language']) && $localContextLanguage == 'English') {
+                            $projectArray[] = $notice;
+                        }
+                    }
+                }
+                $contentArray[] = $projectArray;
             }
             echo $view->partial('local-contexts/common/site-footer', [
                 'lc_content' => $contentArray,

@@ -69,7 +69,7 @@ label, .label {
     text-align: right !important;
 } 
 
-.label:nth-of-type(2n) {
+.label:nth-of-type(even) {
     background: rgba(0,0,0,.04);
 }
 
