@@ -38,6 +38,11 @@ return [
             'LocalContexts\Form\ProjectForm' => 'LocalContexts\Form\ProjectForm',
         ],
     ],
+    'data_types' => [
+        'invokables' => [
+            'lc_content' => 'LocalContexts\DataType\LocalContexts',
+        ],
+    ],
     'router' => [
         'routes' => [
             'admin' => [

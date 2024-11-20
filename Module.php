@@ -376,19 +376,20 @@ class Module extends AbstractModule
     public function saveLCMetadata(array $lcContent, Property $property, Item $item)
     {
         $resourceValues = $item->getValues();
+        $projectURI = isset($lcContent['project_url']) ? $lcContent['project_url'] : null;
 
-        // Save LC content as separate values within chosen metadata field
+        // Save LC content as lc_content Datatype to better display LC graphic and format
         foreach($lcContent as $key => $content) {
             if (is_int($key)) {
                 $value = new Value;
                 $value->setResource($item);
-                $value->setType('literal');
+                $value->setType('lc_content');
                 $value->setIsPublic(true);
                 $value->setProperty($property);
-                $textValue = '';
-                $textValue .= $content['name'];
-                $textValue .= ': ' . $content['text'];
-                $value->setValue($textValue);
+                if (!empty($projectURI)) {
+                    $value->setUri($projectURI);
+                }
+                $value->setValue(json_encode($content));
                 // Switch to localization language tags
                 if (isset($content['language'])) {
                     $langTagArray = array(
@@ -408,21 +409,6 @@ class Module extends AbstractModule
                 $value->setLang($langStr);
                 $resourceValues->add($value);
             }
-        }
-        // If present, save link to LC project as URI value in same field
-        if (isset($lcContent['project_url'])) {
-            $value = new Value;
-            $value->setResource($item);
-            $value->setType('uri');
-            $value->setIsPublic(true);
-            $value->setProperty($property);
-            $value->setUri($lcContent['project_url']);
-            if (isset($lcContent['project_title'])) {
-                $value->setValue('Local Contexts project: ' . $lcContent['project_title']); // @translate
-            } else {
-                $value->setValue('Local Contexts project: ' . $lcContent['project_url']); // @translate
-            }
-            $resourceValues->add($value);
         }
     }
 }
