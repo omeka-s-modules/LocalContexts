@@ -376,7 +376,7 @@ class Module extends AbstractModule
     public function saveLCMetadata(array $lcContent, Property $property, Item $item)
     {
         $resourceValues = $item->getValues();
-        $projectURI = isset($lcContent['project_url']) ? $lcContent['project_url'] : null;
+        $projectURL = isset($lcContent['project_url']) ? $lcContent['project_url'] : null;
 
         // Save LC content as lc_content Datatype to better display LC graphic and format
         foreach($lcContent as $key => $content) {
@@ -386,8 +386,8 @@ class Module extends AbstractModule
                 $value->setType('lc_content');
                 $value->setIsPublic(true);
                 $value->setProperty($property);
-                if (!empty($projectURI)) {
-                    $value->setUri($projectURI);
+                if (!empty($projectURL)) {
+                    $content['project_url'] = $projectURL;
                 }
                 $value->setValue(json_encode($content));
                 // Switch to localization language tags

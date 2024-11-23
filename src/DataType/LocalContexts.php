@@ -21,17 +21,6 @@ class LocalContexts extends Literal
         return 'Local Contexts content';
     }
 
-    public function isValid(array $valueObject)
-    {
-        if (!isset($valueObject['@id'])
-            || !is_string($valueObject['@id'])
-        ) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     public function render(PhpRenderer $view, ValueRepresentation $value)
     {
         $hyperlink = $view->plugin('hyperlink');
@@ -39,7 +28,6 @@ class LocalContexts extends Literal
         $view->headLink()->appendStylesheet($view->assetUrl('css/local-contexts.css', 'LocalContexts'));
 
         $label = json_decode($value->value(), 1);
-        $uri = $value->uri();
 
         if ($label['image_url']) {
             $content = sprintf(
@@ -57,8 +45,8 @@ class LocalContexts extends Literal
             );
         }
         // Link to source Local Contexts project if available
-        if (!empty($uri)) {
-            return $hyperlink->raw($content, $uri, ['class' => 'rights-statements-link']);
+        if (isset($label['project_url'])) {
+            return $hyperlink->raw($content, $label['project_url'], ['class' => 'rights-statements-link']);
         } else {
             return $content;
         }
