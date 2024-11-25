@@ -46,7 +46,7 @@ class LocalContexts extends Literal
         }
         // Link to source Local Contexts project if available
         if (isset($label['project_url'])) {
-            return $hyperlink->raw($content, $label['project_url'], ['class' => 'rights-statements-link']);
+            return $hyperlink->raw($content, $label['project_url'], ['target' => '_blank']);
         } else {
             return $content;
         }
