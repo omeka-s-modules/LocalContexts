@@ -213,7 +213,7 @@ class Module extends AbstractModule
                 'options' => [
                     'element_group' => 'local_contexts',
                     'label' => 'Local Contexts value(s)', // @translate
-                    'info' => 'Local Contexts value(s) to apply to above field.', // @translate
+                    'info' => 'Local Contexts value(s) to apply to site footer.', // @translate
                     'value_options' => $optionArray,
                     'label_options' => [
                         'disable_html_escape' => true,

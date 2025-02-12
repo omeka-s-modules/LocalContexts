@@ -32,10 +32,6 @@ class IndexController extends AbstractActionController
         $view = new ViewModel;
         $form = $this->getForm(ProjectForm::class);
 
-        if ($this->settings->get('lc_institution_id')) {
-            $form->setData(['lc_institution_id' => $this->settings->get('lc_institution_id')]);
-        }
-
         if ($this->settings->get('lc_project_id')) {        
             $form->setData(['lc_project_id' => $this->settings->get('lc_project_id')]);       
         }
@@ -53,9 +49,6 @@ class IndexController extends AbstractActionController
         $form->setData($params);
         if ($form->isValid()) {
             $formData = $form->getData();
-            if (isset($formData['lc_institution_id'])) {
-                $this->settings->set('lc_institution_id', $formData['lc_institution_id']);
-            }
             if (isset($formData['lc_project_id'])) {
                 $this->settings->set('lc_project_id', $formData['lc_project_id']);
             }
@@ -87,24 +80,10 @@ class IndexController extends AbstractActionController
             $this->settings->set('lc_notices', $assignedArray);
         }
 
-        // Retrieve project data from Local Contexts API
         $contentArray = [];
-        // Only retrieve API content if given API key
+        // Retrieve project data from Local Contexts API. Only retrieve API content if given API key
         if (!empty($params['lc_api_key'])) {
-            if (!empty($this->settings->get('lc_institution_id'))) {
-                // Display 'Open to Collaborate' notice along with all institution projects
-                $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
-                $institutionURL = 'https://sandbox.localcontextshub.org/api/v2/projects/?institution_id=' . $this->settings->get('lc_institution_id');
-                $request = $this->client->setUri($institutionURL);
-                $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $params['lc_api_key']]);
-                $response = $request->send();
-                if ($response->isSuccess()) {
-                    $institutionMetadata = json_decode($response->getBody(), true);
-                    foreach ($institutionMetadata['results'] as $project) {
-                        $contentArray[] = $this->fetchAPIdata($params['lc_api_key'], $project['unique_id']);
-                    }
-                }
-            } else if (!empty($this->settings->get('lc_project_id'))) {
+            if (!empty($this->settings->get('lc_project_id'))) {
                 $projects = explode(',', $this->settings->get('lc_project_id'));
                 // Display 'Open to Collaborate' notice along with all given projects
                 $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
@@ -112,10 +91,25 @@ class IndexController extends AbstractActionController
                     $contentArray[] = $this->fetchAPIdata($params['lc_api_key'], trim($projectID));
                 }
             } else {
+                // Display 'Open to Collaborate' notice along with all user projects
                 $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
+                $projectsURL = 'https://sandbox.localcontextshub.org/api/v2/projects/';
+                $request = $this->client->setUri($projectsURL);
+                $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $params['lc_api_key']]);
+                $response = $request->send();
+                if ($response->isSuccess()) {
+                    $projectsMetadata = json_decode($response->getBody(), true);
+                    foreach ($projectsMetadata['results'] as $project) {
+                        $contentArray[] = $this->fetchAPIdata($params['lc_api_key'], $project['unique_id']);
+                    }
+                }
             }
             $contentArray = array_filter($contentArray);
         }
+
+        // Remove already assigned notices from retrieved notices
+        $contentArray = array_diff(array_map('serialize',$contentArray), array_map('serialize',$assignedArray));
+        $contentArray = array_map('unserialize', $contentArray);
 
         // Redirect to index page if no content to display
         if (empty($contentArray) && empty($assignedArray)) {
@@ -123,7 +117,7 @@ class IndexController extends AbstractActionController
         } else if (empty($contentArray) && !empty($assignedArray)) {
             $view->setVariable('lc_assigned', $assignedArray);
         } else if (!empty($contentArray) && empty($assignedArray)) {
-            $view->setVariable('lc_assigned', $contentArray);
+            $view->setVariable('lc_content', $contentArray);
         } else {
             $view->setVariable('lc_content', $contentArray);
             $view->setVariable('lc_assigned', $assignedArray);
