@@ -3,7 +3,7 @@
         <label for="o:lc-content"><?php echo $this->translate('Local Contexts Notices'); ?></label>
         <a href="#" class="expand" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
         <div class="collapsible">
-            <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as chosen metadata field.'); ?></div>
+            <div class="field-description"><?php echo $this->translate('Assign selected Local Contexts notice(s) to chosen metadata field in chosen language(s).'); ?></div>
         </div>
     </div>
     <div class="inputs localcontexts">
@@ -16,6 +16,8 @@
                 'data-placeholder' => 'Select a property', // @translate
             ],
         ]);
+
+        echo $this->formSelect($language_select);
         $html = '';
         foreach ($this->lc_content as $notice_content) {
             $html .= "<div class='label admin'>";

@@ -46,6 +46,7 @@ class LocalContexts extends AbstractBlockLayout
             $setLanguage = $block ? $block->dataValue('language') : 'en-US';
             $selectLanguage = new Select('o:block[__blockIndex__][o:data][language]');
             $languageArray = array(
+                'All' => 'All available languages',
                 'English' => 'English',
                 'French' => 'French',
                 'Spanish' => 'Spanish',
@@ -74,23 +75,28 @@ class LocalContexts extends AbstractBlockLayout
 		if (!$localContextContent) {
             return '';
         }
-        $localContextLanguage = $block->dataValue('language');
+        $lcLanguage = $block->dataValue('language');
 		
 		if ($view->setting('lc_notices')) {
 			$projects = $view->setting('lc_notices');
 			foreach ($projects as $project) {
 				if ((isset($project['project_title']) && $project['project_title'] == $localContextContent) || $project[0]['name'] == $localContextContent) {
                     $contentArray = array();
-                    $contentArray['project_title'] = isset($project['project_title']) ? $project['project_title'] : '';
-                    $contentArray['project_url'] = isset($project['project_url']) ? $project['project_url'] : '';
-                    foreach ($project as $key => $notice) {
+                    foreach ($project as $key => $content) {
                         if (is_int($key)) {
-                            if (isset($notice['language']) && ($notice['language'] == $localContextLanguage)) {
-                                $contentArray[] = $notice;
-                            } elseif (!isset($notice['language']) && $localContextLanguage == 'English') {
-                                $contentArray[] = $notice;
+                            // Only print content in selected language. If 'English' or 'All',
+                            // print everything (since English doesn't have language element)
+                            if ((isset($content['language']) && $content['language'] == $lcLanguage) 
+                            || (!isset($content['language']) && $lcLanguage == 'English') 
+                            || $lcLanguage == 'All') {
+                                $contentArray[] = $content;
                             }
                         }
+                    }
+                    // Don't print project URL if element value array is empty
+                    if (isset($project['project_url']) && $contentArray) {
+                        $contentArray['project_url'] = $project['project_url'];
+                        $contentArray['project_title'] = $project['project_title'];
                     }
                     break;
                 } else {
