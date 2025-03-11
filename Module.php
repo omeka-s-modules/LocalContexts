@@ -10,6 +10,7 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\Form\Fieldset;
 use Laminas\Form\Element;
+use Laminas\Form\Element\Select;
 use Laminas\Form\Element\MultiCheckbox;
 use Laminas\EventManager\Event;
 
@@ -116,6 +117,10 @@ class Module extends AbstractModule
                     'required' => false,
                 ]);
                 $inputFilter->add([
+                    'name' => 'o:lc-content-language',
+                    'required' => false,
+                ]);
+                $inputFilter->add([
                     'name' => 'o:lc-content',
                     'required' => false,
                 ]);
@@ -130,6 +135,9 @@ class Module extends AbstractModule
                 $rawData = $event->getParam('request')->getContent();
                 if (isset($rawData['o:lc-content-property'])) {
                     $data['o:lc-content-property'] = $rawData['o:lc-content-property'];
+                }
+                if (isset($rawData['o:lc-content-language'])) {
+                    $data['o:lc-content-language'] = $rawData['o:lc-content-language'];
                 }
                 if (isset($rawData['o:lc-content'])) {
                     $data['o:lc-content'] = $rawData['o:lc-content'];
@@ -183,6 +191,7 @@ class Module extends AbstractModule
                     'label' => 'Local Contexts Language', // @translate
                     'info' => 'Only display content in selected language (Note: must already be generated and retrieved from LC Hub).', // @translate
                     'value_options' => [
+                        'All' => 'All available languages', // @translate
                         'English' => 'English', // @translate
                         'French' => 'French', // @translate
                         'Spanish' => 'Spanish', // @translate
@@ -225,29 +234,33 @@ class Module extends AbstractModule
         $siteSettings = $this->getServiceLocator()->get('Omeka\Settings\Site');
         if (isset($view->site) && $siteSettings->get('lc_content_sites')) {
             $projects = $siteSettings->get('lc_content_sites');
-            $localContextLanguage = $siteSettings->get('lc_language');
+            $lcLanguage = $siteSettings->get('lc_language');
             $contentArray = array();
             foreach ($projects as $project) {
                 $project = json_decode($project, true);
                 $projectArray = array();
 
-                if (isset($project['project_title'])) {
-                    $projectArray['project_title'] = $project['project_title'];
-                }
-                if (isset($project['project_url'])) {
-                    $projectArray['project_url'] = $project['project_url'];
-                }
-
-                foreach ($project as $key => $notice) {
+                foreach ($project as $key => $content) {
                     if (is_int($key)) {
-                        if (isset($notice['language']) && ($notice['language'] == $localContextLanguage)) {
-                            $projectArray[] = $notice;
-                        } elseif (!isset($notice['language']) && $localContextLanguage == 'English') {
-                            $projectArray[] = $notice;
+                        // Only print content in selected language. If 'English' or 'All',
+                        // print everything (since English doesn't have language element)
+                        if ((isset($content['language']) && $content['language'] == $lcLanguage) 
+                        || (!isset($content['language']) && $lcLanguage == 'English') 
+                        || $lcLanguage == 'All') {
+                            $projectArray[] = $content;
                         }
                     }
                 }
-                $contentArray[] = $projectArray;
+
+                // Don't print project URL if element value array is empty
+                if (isset($project['project_url']) && $projectArray) {
+                    $projectArray['project_url'] = $project['project_url'];
+                    $projectArray['project_title'] = $project['project_title'];
+                }
+
+                if ($projectArray) {
+                    $contentArray[] = $projectArray;
+                }
             }
             echo $view->partial('local-contexts/common/site-footer', [
                 'lc_content' => $contentArray,
@@ -265,8 +278,19 @@ class Module extends AbstractModule
                 $contentArray[] = $project;
             }
 
+            $languageData = [
+                'All' => 'All available languages', // @translate
+                'English' => 'English', // @translate
+                'French' => 'French', // @translate
+                'Spanish' => 'Spanish', // @translate
+                'Māori' => 'Māori', // @translate
+            ];
+            $languageSelect = new Select('o:lc-content-language');
+            $languageSelect->setValueOptions($languageData);
+
 			echo $view->partial('local-contexts/common/lc-resource-edit', [
 	            'data' => $formData,
+                'language_select' => $languageSelect,
                 'lc_content' => $contentArray,
 	        ]);
             $view->headLink()->appendStylesheet($view->assetUrl('css/local-contexts.css', 'LocalContexts'));
@@ -292,6 +316,25 @@ class Module extends AbstractModule
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select property', // @translate
                     'id' => 'o-property',
+                    'required' => false,
+                ],
+            ]);
+
+            $form->add([
+                'name' => 'o:lc-content-language',
+                'type' => Element\Select::class,
+                'options' => [
+                    'label' => 'Local Contexts language', // @translate
+                    'info' => 'Only display content in selected language (Note: must already be generated and retrieved from LC Hub).', // @translate
+                    'value_options' => [
+                        'All' => 'All available languages', // @translate
+                        'English' => 'English', // @translate
+                        'French' => 'French', // @translate
+                        'Spanish' => 'Spanish', // @translate
+                        'Māori' => 'Māori', // @translate
+                    ],
+                ],
+                'attributes' => [
                     'required' => false,
                 ],
             ]);
@@ -341,9 +384,10 @@ class Module extends AbstractModule
         $property = $propertyAdapter->findEntity($lcContentProperty);
 
         if ($data['o:lc-content']) {
+            $lcLanguage = $data['o:lc-content-language'];
             foreach ($data['o:lc-content'] as $lcContent) {
                 $lcContent = json_decode($lcContent, true);
-                $this->saveLCMetadata($lcContent, $property, $item);
+                $this->saveLCMetadata($lcContent, $property, $item, $lcLanguage);
             }
         }
     }
@@ -366,42 +410,48 @@ class Module extends AbstractModule
         $lcHtml .= '</div>';
         return $lcHtml;
     }
-
-    public function saveLCMetadata(array $lcContent, Property $property, Item $item)
+  
+    public function saveLCMetadata(array $lcContent, Property $property, Item $item, $lcLanguage)
     {
         $resourceValues = $item->getValues();
         $projectURL = isset($lcContent['project_url']) ? $lcContent['project_url'] : null;
+        $langTagArray = array(
+            'French' => 'fr',
+            'Spanish' => 'es',
+            'Māori' => 'mi'
+        );
 
         // Save LC content as lc_content Datatype to better display LC graphic and format
         foreach($lcContent as $key => $content) {
             if (is_int($key)) {
-                $value = new Value;
-                $value->setResource($item);
-                $value->setType('lc_content');
-                $value->setIsPublic(true);
-                $value->setProperty($property);
-                if (!empty($projectURL)) {
-                    $content['project_url'] = $projectURL;
-                }
-                $value->setValue(json_encode($content));
-                // Switch to localization language tags
-                if (isset($content['language'])) {
-                    $langTagArray = array(
-                        'French' => 'fr',
-                        'Spanish' => 'es',
-                        'Māori' => 'mi'
-                    );
-                    if (array_key_exists($content['language'], $langTagArray)) {
-                        $langStr = $langTagArray[$content['language']];
+                // Only print content in selected language. If 'English' or 'All',
+                // print everything (since English doesn't have language element)
+                if ((isset($content['language']) && $content['language'] == $lcLanguage) 
+                || (!isset($content['language']) && $lcLanguage == 'English') 
+                || $lcLanguage == 'All') {
+                    $value = new Value;
+                    $value->setResource($item);
+                    $value->setType('lc_content');
+                    $value->setIsPublic(true);
+                    $value->setProperty($property);
+                    if (!empty($projectURL)) {
+                        $content['project_url'] = $projectURL;
+                    }
+                    $value->setValue(json_encode($content));
+                    // Switch to localization language tags
+                    if (isset($content['language'])) {
+                        if (array_key_exists($content['language'], $langTagArray)) {
+                            $langStr = $langTagArray[$content['language']];
+                        } else {
+                            $langStr = 'en-US';
+                        }
                     } else {
+                        // Set English by default
                         $langStr = 'en-US';
                     }
-                } else {
-                    // Set English by default
-                    $langStr = 'en-US';
+                    $value->setLang($langStr);
+                    $resourceValues->add($value);
                 }
-                $value->setLang($langStr);
-                $resourceValues->add($value);
             }
         }
     }
