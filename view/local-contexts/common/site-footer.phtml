@@ -1,26 +1,11 @@
+<?php $translate = $this->plugin('translate'); ?>
+<div id="local-contexts-content">
+<?php foreach ($this->lc_content as $content): ?>
+    <?php echo $this->partial('local-contexts/common/project.phtml', ['project' => $content]); ?>  
+<?php endforeach; ?>
+</div>
 <script>
 $(document).ready( function() {
-    <?php
-    $translate = $this->plugin('translate');
-    $html = '';
-    foreach ($this->lc_content as $content) {
-        $html .= "<div class='label'>";
-        foreach ($content as $key => $label) {
-            if (is_int($key)) {
-                $html .= "<img class='column image' src='" . $label['image_url'] . "'>";
-                $html .= "<div class='column text'><div class='name'>" . $label['name'] . "</div>";
-                $html .= "<div class='description'>" . $label['text'] . "</div></div>";
-            }
-        }
-        $html .= "</div>";
-        if (isset($content['project_url'])) {
-            $html .= "<nav class='project-link'>";
-            $html .= "<span>" . $translate('Local Contexts project link: ') . "</span>";
-            $html .= "<a target='_blank' href=" . $content['project_url'] . ">" . $content['project_title'] . "</a>";
-            $html .= "</nav>";
-        }
-    }
-    ?>
-    $('footer').prepend("<?php echo $html ?>");
+    $('footer').prepend("#local-contexts-content");
 });
 </script>

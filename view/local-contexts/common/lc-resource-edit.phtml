@@ -1,44 +1,46 @@
-<div class="field">
-    <div class="field-meta">
-        <label for="o:lc-content"><?php echo $this->translate('Local Contexts Notices'); ?></label>
-        <a href="#" class="expand" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
-        <div class="collapsible">
-            <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as chosen metadata field.'); ?></div>
+<fieldset>
+    <legend><?php echo $this->translate('Local Contexts Notices'); ?></legend>
+    <div class="field">
+        <div class="field-meta">
+            <label for="o:lc-content"><?php echo $this->translate('Property'); ?></label>
+            <a href="#" class="expand" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
+            <div class="collapsible">
+                <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as chosen metadata field.'); ?></div>
+            </div>
+        </div>
+        <div class="inputs localcontexts">
+            <?php
+            echo $this->propertySelect([
+                'name' => 'o:lc-content-property',
+                'attributes' => [
+                    'class' => 'chosen-select',
+                    'multiple' => false,
+                    'data-placeholder' => 'Select a property', // @translate
+                ],
+            ]);
+            ?>
         </div>
     </div>
-    <div class="inputs localcontexts">
-        <?php
-        echo $this->propertySelect([
-            'name' => 'o:lc-content-property',
-            'attributes' => [
-                'class' => 'chosen-select',
-                'multiple' => false,
-                'data-placeholder' => 'Select a property', // @translate
-            ],
-        ]);
-        $html = '';
-        foreach ($this->lc_content as $notice_content) {
-            $html .= "<div class='label admin'>";
-            $html .= "<div class='column check'><input type='checkbox' name='o:lc-content[]' value='" . $this->escapeHtml(json_encode($notice_content)) . "'></div>";
-            $html .= "<div class='column content'>";
-            if (isset($notice_content['project_url'])) {
-                $html .= "<a class='name' target='_blank' href=" . $notice_content['project_url'] . ">" . $notice_content['project_title'] . "</a>";
-            }
-            foreach($notice_content as $key => $content) {
-                if (is_int($key)) {
-                    $html .= "<div class='column description'>";
-                    $html .= "<img class='column image' src='" . $content['image_url'] . "'>";
-                    $html .= "<div class='column text'><div class='name'>" . $content['name'];
-                    if (isset($content['language'])) {
-                        $html .= "<span class='language'> (" . $content['language'] . ")</span>";
-                    }
-                    $html .= "</div>";
-                    $html .= "<div class='description'>" . $content['text'] . "</div></div></div>";
-                }
-            }
-            $html .= "</div></div>"; 
-        }
-        echo $html;
-        ?>
+    <div class="field">
+        <div class="field-meta">
+            <label for="o:lc-content"><?php echo $this->translate('Local Contexts Notices'); ?></label>
+            <a href="#" class="expand" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
+            <div class="collapsible">
+                <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as chosen metadata field.'); ?></div>
+            </div>
+        </div>
+        <div class="inputs">
+            <label class="local-contexts-multicheckbox">
+            <?php foreach ($this->lc_content as $project): ?>
+                <input type='checkbox' class="column check" name='o:lc-content[]' value='<?php echo $this->escapeHtml(json_encode($project)); ?>'>
+                <div class="column content">
+                <?php if (isset($project['project_url'])): ?>
+                    <a class='project-name' target='_blank' href="<?php echo $project['project_url']; ?>"><?php echo $project['project_title']; ?></a>
+                <?php endif; ?>
+                <?php echo $this->partial('local-contexts/common/project.phtml', ['project' => $project]); ?>  
+                </div>
+            <?php endforeach; ?>
+            </label>
+        </div>
     </div>
-</div>
+</fieldset>

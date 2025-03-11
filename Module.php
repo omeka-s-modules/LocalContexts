@@ -169,19 +169,7 @@ class Module extends AbstractModule
 			$lcArray = array();
             foreach (array_unique($projects, SORT_REGULAR) as $key => $project) {
                 // Save each project's content as single select value
-                $lcHtml = '<div class="column content">';
-                if (isset($project['project_url'])) {
-                    $lcHtml .= "<a class='name' target='_blank' href=" . $project['project_url'] . ">" . $project['project_title'] . "</a>";
-                }
-                foreach($project as $key => $content) {
-                    if (is_int($key)) {
-                        $lcHtml .= '<div class="column description"><img class="column image" src="' . $content['image_url'] .
-                                         '"><div class="column text"><div class="name">' . $content['name'] .
-                                         (isset($content['language']) ? '<span class="language"> (' . $content['language'] . ')</span>' : '') . '</div>' .
-                                         '<div class="description">' . $content['text'] . '</div></div></div>';
-                    }
-                }
-                $lcHtml .= '</div>';
+                $lcHtml = $this->renderLCNoticeHtml($project);
                 $lcArray['label'] = $lcHtml;
                 $lcArray['value'] = json_encode($project);
                 $optionArray[] = $lcArray;
@@ -219,7 +207,7 @@ class Module extends AbstractModule
                         'disable_html_escape' => true,
                     ],
                     'label_attributes' => [
-                        'class' => 'label admin',
+                        'class' => 'local-contexts-multicheckbox',
                     ],
                 ],
                 'attributes' => [
@@ -310,20 +298,7 @@ class Module extends AbstractModule
 
 			$lcArray = array();
             foreach ($projects as $project) {
-                // Save each project's content as single select value
-                $lcHtml = '<div class="column content">';
-                if (isset($project['project_url'])) {
-                    $lcHtml .= "<a class='name' target='_blank' href=" . $project['project_url'] . ">" . $project['project_title'] . "</a>";
-                }
-                foreach($project as $key => $content) {
-                    if (is_int($key)) {
-                        $lcHtml .= '<div class="column description"><img class="column image" src="' . $content['image_url'] .
-                                         '"><div class="column text"><div class="name">' . $content['name'] .
-                                         (isset($content['language']) ? '<span class="language"> (' . $content['language'] . ')</span>' : '') . '</div>' .
-                                         '<div class="description">' . $content['text'] . '</div></div></div>';
-                    }
-                }
-                $lcHtml .= '</div>';
+                $lcHtml = $this->renderLCNoticeHtml($project);
                 $lcArray['label'] = $lcHtml;
                 $lcArray['value'] = json_encode($project);
                 $optionArray[] = $lcArray;
@@ -340,7 +315,7 @@ class Module extends AbstractModule
                         'disable_html_escape' => true,
                     ],
                     'label_attributes' => [
-                        'class' => 'label admin',
+                        'class' => 'local-contexts-multicheckbox',
                     ],
                 ],
                 'attributes' => [
@@ -371,6 +346,25 @@ class Module extends AbstractModule
                 $this->saveLCMetadata($lcContent, $property, $item);
             }
         }
+    }
+
+    public function renderLCNoticeHtml($project) {
+        $lcHtml = '';
+        // Save each project's content as single select value
+        $lcHtml = '<div class="column content">';
+        if (isset($project['project_url'])) {
+            $lcHtml .= "<a class='project-name' target='_blank' href=" . $project['project_url'] . ">" . $project['project_title'] . "</a>";
+        }
+        foreach($project as $key => $content) {
+            if (is_int($key)) {
+                $lcHtml .= '<div class="local-contexts-notice"><img class="image" src="' . $content['image_url'] .
+                    '"><div class="column text"><div class="notice-name">' . $content['name'] .
+                    (isset($content['language']) ? '<span class="language"> (' . $content['language'] . ')</span>' : '') . '</div>' .
+                    '<div class="notice-description">' . $content['text'] . '</div></div></div>';
+            }
+        }
+        $lcHtml .= '</div>';
+        return $lcHtml;
     }
 
     public function saveLCMetadata(array $lcContent, Property $property, Item $item)

@@ -1,83 +1,103 @@
-label {
-    display: inline-flex;
+#local-contexts.default {
+    height: 0;
+    overflow: hidden;
+}
+
+.local-contexts-notice {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    padding: 1rem;
+}
+
+.element-text .local-contexts-notice {
+    padding: 0;
+}
+
+.local-contexts-notice .notice-name {
+    display: block;
+    font-weight: bold;
+}
+
+.local-contexts-notice .language {
+    font-weight: normal !important;
+}
+
+.local-contexts-multicheckbox {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.local-contexts-multicheckbox.inputs,
+.inputs .local-contexts-multicheckbox {
+    line-height: 24px;
+}
+
+.local-contexts-multicheckbox > label,
+.local-contexts-multicheckbox .local-contexts-multicheckbox-row {
+    display: flex;
+    align-items: flex-start;
+}
+
+.inputs .local-contexts-multicheckbox {
+    display: flex;
     flex-wrap: nowrap;
     align-items: flex-start;
 }
 
-.inputs, .inputs.localcontexts {
-    flex-wrap: wrap;
-    align-items: flex-start;
-    line-height: unset;
+.inputs .local-contexts-multicheckbox .column.check {
+    margin: 1rem;
 }
 
-.name {
-    display: block;
-    font-weight: bold;
+.local-contexts-multicheckbox .local-contexts-multicheckbox-row:nth-child(odd),
+.local-contexts-multicheckbox > label:nth-child(odd),
+.inputs .local-contexts-multicheckbox:nth-child(odd) {
+    background: rgba(0,0,0,.04);
 }
 
-.label > .name {
-    display: block;
-    padding: 6px 2em 6px 6px;
-    border-radius: 3px 3px 0 0;
-    border-top-width: 1px;
+.local-contexts-multicheckbox input[type="checkbox"] {
+    margin: 1rem !important;
 }
 
-.language {
-    font-weight: normal !important;
-}
-
-label, .label {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 6px;
-}
-
-.column {
-    padding: 6px;
-    object-fit: contain;
-    align-self: center;
-}
-
-.check {
-    width: 5% !important;
-    text-align: center !important;
-}
-
-.content {
-    width: 93%;
-}
-
-.description {
-    display: flex;
-    flex-direction: row;
-}
-
-.image {
-    width: 18%;
-    height: 125px;
-}
-
-.text {
-    width: 75%;
+.local-contexts-notice .image {
+    height: 75px;
+    border: 0px !important;
+    margin-right: 1rem;
 }
 
 .project-link {
     display: block;
-    font-weight: bold;
+    width: 100%;
     font-size: 16px;
     text-align: right !important;
-} 
-
-.label:nth-of-type(even) {
-    background: rgba(0,0,0,.04);
+    padding: 1rem;
 }
 
-.label > .name, 
-.label > .description {
-    margin-bottom: 6px;
+.project-name {
+    padding: 1rem;
+    font-weight: bold;
+    display: block;
 }
 
-.label > .name {
-    padding: 0 2rem 0 0;
+.project-link:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+}
+
+.value.lc-content .local-contexts-notice {
+    padding: 1rem 0 0;
+}
+
+span.lc {
+    font-weight: bold;
+}
+
+@media screen and (min-width: 1200px) {
+    footer .local-contexts-project {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    footer .local-contexts-notice {
+        width: 50%;
+    }
 }

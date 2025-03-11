@@ -29,26 +29,6 @@ class LocalContexts extends Literal
 
         $label = json_decode($value->value(), 1);
 
-        if ($label['image_url']) {
-            $content = sprintf(
-                "<div class='label'><img class='column image' src='%s'><div class='column text'>
-                <div class='name'>%s</div><div class='description'>%s</div></div></div>",
-                $escape($label['image_url']),
-                $escape($label['name']),
-                $escape($label['text']),
-            );
-        } else {
-            $content = sprintf(
-                "<div class='column text'><div class='name'>%s</div><div class='description'>%s</div></div>",
-                $escape($label['name']),
-                $escape($label['text']),
-            );
-        }
-        // Link to source Local Contexts project if available
-        if (isset($label['project_url'])) {
-            return $hyperlink->raw($content, $label['project_url'], ['target' => '_blank']);
-        } else {
-            return $content;
-        }
+        return $view->partial('local-contexts/common/notice.phtml', ['notice' => $label]); 
     }
 }
