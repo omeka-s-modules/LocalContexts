@@ -1,0 +1,7 @@
+<div class='local-contexts-project'>
+<?php foreach ($project as $key => $notice): ?>
+    <?php if (is_int($key)): ?>
+        <?php echo $this->partial('local-contexts/common/notice.phtml', ['notice' => $notice]); ?>  
+    <?php endif; ?>
+<?php endforeach; ?>
+</div>
