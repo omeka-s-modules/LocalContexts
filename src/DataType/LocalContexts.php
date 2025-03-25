@@ -29,6 +29,6 @@ class LocalContexts extends Literal
 
         $label = json_decode($value->value(), 1);
 
-        return $view->partial('local-contexts/common/notice.phtml', ['notice' => $label]); 
+        return $view->partial('local-contexts/common/linked-notice.phtml', ['notice' => $label]); 
     }
 }
