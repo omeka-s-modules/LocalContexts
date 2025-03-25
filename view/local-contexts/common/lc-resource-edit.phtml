@@ -23,6 +23,16 @@
     </div>
     <div class="field">
         <div class="field-meta">
+            <label for="lc_language"><?php echo $this->translate('Local Contexts language'); ?></label>
+            <a href="#" class="expand" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
+            <div class="collapsible">
+                <div class="field-description"><?php echo $this->translate('Assign selected Local Contexts notice(s) to chosen metadata field in chosen language(s).'); ?></div>
+            </div>
+        </div>
+        <div class="inputs localcontexts"><?php echo $this->formSelect($language_select); ?></div>
+    </div>
+    <div class="field">
+        <div class="field-meta">
             <label for="o:lc-content"><?php echo $this->translate('Local Contexts Notices'); ?></label>
             <a href="#" class="expand" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
             <div class="collapsible">
