@@ -1,6 +1,6 @@
 <div class='local-contexts-project'>
-<?php if (isset($notice['project_url'])): ?>
-    <a class="project-name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($notice['project_title']); ?></a>
+<?php if (isset($project['project_url'])): ?>
+    <a class="project-name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($project['project_title']); ?></a>
 <?php endif; ?>
 <?php foreach ($project as $key => $notice): ?>    
     <?php if (is_int($key)): ?>

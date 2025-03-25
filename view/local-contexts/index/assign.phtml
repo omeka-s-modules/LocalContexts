@@ -34,9 +34,6 @@ if (isset($lc_content) && isset($lc_assigned)) {
                 <input name="lc-notice[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($notice_content)); ?>">
             </div>
             <div class="column content">
-                <?php if (isset($notice_content['project_url'])): ?>
-                    <a class="project-name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($notice_content['project_title']); ?></a>
-                <?php endif; ?>
                 <?php echo $this->partial('local-contexts/common/project.phtml', ['project' => $notice_content]); ?>  
             </div>
         </div>
@@ -55,9 +52,6 @@ if (isset($lc_content) && isset($lc_assigned)) {
             <input name="lc-remove[]" type="checkbox" value="<?php echo $this->escapeHtml(json_encode($remove_content)); ?>">
             </div>
             <div class="column content">
-            <?php if (isset($remove_content['project_url'])): ?>
-                <a class="project-name" target="_blank" href="<?php echo($remove_content['project_url']); ?>"><?php echo($remove_content['project_title']); ?></a>
-            <?php endif; ?>
             <?php echo $this->partial('local-contexts/common/project.phtml', ['project' => $remove_content]); ?>  
             </div>
         </div>
