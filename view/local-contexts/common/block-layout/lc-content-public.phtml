@@ -1,20 +1,14 @@
-<?php
+<?php 
 $translate = $this->plugin('translate');
-$html = '';
-$html .= "<div class='label'>";
-foreach ($this->lc_content as $key => $content) {
-    if (is_int($key)) {
-        $html .= "<img class='column image' src='" . $content['image_url'] . "'>";
-        $html .= "<div class='column text'><div class='name'>" . $content['name'] . "</div>";
-        $html .= "<div class='description'>" . $content['text'] . "</div></div>";
-    }
-}
-$html .= "</div>";
-if (isset($this->lc_content['project_url'])) {
-    $html .= "<div class='project-link'>";
-    $html .= "<span>" . $translate('Local Contexts project link: ') . "</span>";
-    $html .= "<a target='_blank' href=" . $this->lc_content['project_url'] . ">" . $this->lc_content['project_title'] . "</a>";
-    $html .= "</div>";
-}
-echo $html;
+$project = $this->lc_content;
 ?>
+<div class='local-contexts-project'>
+<?php if (isset($project['project_url'])): ?>
+    <a class="project-name" target="_blank" href="<?php echo($notice_content['project_url']); ?>"><?php echo($project['project_title']); ?></a>
+<?php endif; ?>
+<?php foreach ($project as $key => $notice): ?>    
+    <?php if (is_int($key)): ?>
+        <?php echo $this->partial('local-contexts/common/notice.phtml', ['notice' => $notice]); ?>  
+    <?php endif; ?>
+<?php endforeach; ?>
+</div>
