@@ -42,9 +42,11 @@
         <div class="inputs">
             <?php foreach ($this->lc_content as $project): ?>
             <label class="local-contexts-multicheckbox">
-                <input type='checkbox' class="column check" name='o:lc-content[]' value='<?php echo $this->escapeHtml(json_encode($project)); ?>'>
+                <div class="column check">
+                <input type='checkbox' class="column check" name='o:lc-content[]' value='<?php echo $this->escapeHtml($project['value']); ?>'>
+                </div>
                 <div class="column content">
-                <?php echo $this->partial('local-contexts/common/project.phtml', ['project' => $project]); ?>  
+                <?php echo $project['label']; ?>
                 </div>
             </label>
             <?php endforeach; ?>

@@ -1,14 +1,8 @@
 <?php 
 $translate = $this->plugin('translate');
-$project = $this->lc_content;
 ?>
 <div class='local-contexts-project'>
-<?php if (isset($project['project_url'])): ?>
-    <a class="project-name" target="_blank" href="<?php echo $project['project_url']; ?>"><?php echo($project['project_title']); ?></a>
-<?php endif; ?>
-<?php foreach ($project as $key => $notice): ?>    
-    <?php if (is_int($key)): ?>
-        <?php echo $this->partial('local-contexts/common/notice.phtml', ['notice' => $notice]); ?>  
-    <?php endif; ?>
+<?php foreach ($this->lc_content as $content): ?>
+    <?php echo $content['label']; ?>
 <?php endforeach; ?>
 </div>

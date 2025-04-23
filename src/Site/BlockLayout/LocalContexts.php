@@ -81,23 +81,32 @@ class LocalContexts extends AbstractBlockLayout
 			$projects = $view->setting('lc_notices');
 			foreach ($projects as $project) {
 				if ((isset($project['project_title']) && $project['project_title'] == $localContextContent) || $project[0]['name'] == $localContextContent) {
-                    $contentArray = array();
+                    $projectArray = array();
                     foreach ($project as $key => $content) {
                         if (is_int($key)) {
-                            // Only print content in selected language. If 'English' or 'All',
-                            // print everything (since English doesn't have language element)
+                            // Only print content in selected language. If 'All', print everything
                             if ((isset($content['language']) && $content['language'] == $lcLanguage) 
                             || (!isset($content['language']) && $lcLanguage == 'English') 
                             || $lcLanguage == 'All') {
-                                $contentArray[] = $content;
+                                $projectArray[] = $content;
                             }
                         }
                     }
+
                     // Don't print project URL if element value array is empty
-                    if (isset($project['project_url']) && $contentArray) {
-                        $contentArray['project_url'] = $project['project_url'];
-                        $contentArray['project_title'] = $project['project_title'];
+                    if (isset($project['project_url']) && $projectArray) {
+                        $projectArray['project_url'] = $project['project_url'];
+                        $projectArray['project_title'] = $project['project_title'];
                     }
+
+                    $lcArray = array();
+                    if ($projectArray) {
+                        $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($projectArray);
+                        $lcArray['label'] = $lcHtml;
+                        $lcArray['value'] = json_encode($project);
+                        $contentArray[] = $lcArray;
+                    }
+
                     break;
                 } else {
                     $contentArray = [];

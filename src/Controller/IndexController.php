@@ -1,6 +1,7 @@
 <?php
 namespace LocalContexts\Controller;
 
+use LocalContexts\Module;
 use LocalContexts\Form\ProjectForm;
 use Laminas\Form\Form;
 use Laminas\Mvc\Controller\AbstractActionController;
@@ -65,7 +66,7 @@ class IndexController extends AbstractActionController
         }
 
         // Get existing LC content from database
-        $assignedArray = $this->settings->get('lc_notices') ?: [];
+        $existingProjectArray = $this->settings->get('lc_notices') ?: [];
 
         // If LC assign content selected, add to general settings for site/item/page block access
         if (isset($params['lc-notice'])) {
@@ -74,25 +75,25 @@ class IndexController extends AbstractActionController
             }
             
             // Add notices to general settings for site/item/page block access
-            if (isset($assignedArray)) {
-                $assignedArray = array_unique(array_merge($assignedArray, $noticeArray), SORT_REGULAR);
+            if (isset($existingProjectArray)) {
+                $existingProjectArray = array_unique(array_merge($existingProjectArray, $noticeArray), SORT_REGULAR);
             }
-            $this->settings->set('lc_notices', $assignedArray);
+            $this->settings->set('lc_notices', $existingProjectArray);
         }
 
-        $contentArray = [];
+        $newProjectArray = [];
         // Retrieve project data from Local Contexts API. Only retrieve API content if given API key
         if (!empty($params['lc_api_key'])) {
             if (!empty($this->settings->get('lc_project_id'))) {
                 $projects = explode(',', $this->settings->get('lc_project_id'));
                 // Display 'Open to Collaborate' notice along with all given projects
-                $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
+                $newProjectArray[] = $this->fetchAPIdata($params['lc_api_key']);
                 foreach ($projects as $projectID) {
-                    $contentArray[] = $this->fetchAPIdata($params['lc_api_key'], trim($projectID));
+                    $newProjectArray[] = $this->fetchAPIdata($params['lc_api_key'], trim($projectID));
                 }
             } else {
                 // Display 'Open to Collaborate' notice along with all user projects
-                $contentArray[] = $this->fetchAPIdata($params['lc_api_key']);
+                $newProjectArray[] = $this->fetchAPIdata($params['lc_api_key']);
                 $projectsURL = 'https://sandbox.localcontextshub.org/api/v2/projects/';
                 $request = $this->client->setUri($projectsURL);
                 $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $params['lc_api_key']]);
@@ -100,16 +101,32 @@ class IndexController extends AbstractActionController
                 if ($response->isSuccess()) {
                     $projectsMetadata = json_decode($response->getBody(), true);
                     foreach ($projectsMetadata['results'] as $project) {
-                        $contentArray[] = $this->fetchAPIdata($params['lc_api_key'], $project['unique_id']);
+                        $newProjectArray[] = $this->fetchAPIdata($params['lc_api_key'], $project['unique_id']);
                     }
                 }
             }
-            $contentArray = array_filter($contentArray);
+            $newProjectArray = array_filter($newProjectArray);
         }
 
         // Remove already assigned notices from retrieved notices
-        $contentArray = array_diff(array_map('serialize',$contentArray), array_map('serialize',$assignedArray));
-        $contentArray = array_map('unserialize', $contentArray);
+        $newProjectArray = array_diff(array_map('serialize',$newProjectArray), array_map('serialize', $existingProjectArray));
+        $newProjectArray = array_map('unserialize', $newProjectArray);
+
+        $contentArray = [];
+        foreach ($newProjectArray as $project) {
+            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project);
+            $lcArray['label'] = $lcHtml;
+            $lcArray['value'] = json_encode($project);
+            $contentArray[] = $lcArray;
+        }
+
+        $assignedArray = [];
+        foreach ($existingProjectArray as $project) {
+            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project);
+            $lcArray['label'] = $lcHtml;
+            $lcArray['value'] = json_encode($project);
+            $assignedArray[] = $lcArray;
+        }
 
         // Redirect to index page if no content to display
         if (empty($contentArray) && empty($assignedArray)) {

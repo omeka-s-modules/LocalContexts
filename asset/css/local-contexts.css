@@ -6,12 +6,16 @@
 .local-contexts-notice {
     display: flex;
     flex-wrap: nowrap;
-    align-items: flex-start;
+    align-items: center;
     padding: 1rem;
 }
 
 .element-text .local-contexts-notice {
     padding: 0;
+}
+
+.local-context-notice-meta .text {
+    padding: 5px 0px;
 }
 
 .local-contexts-notice .notice-name {

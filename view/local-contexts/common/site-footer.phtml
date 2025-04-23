@@ -1,7 +1,9 @@
 <?php $translate = $this->plugin('translate'); ?>
 <div id="local-contexts-content">
 <?php foreach ($this->lc_content as $content): ?>
-    <?php echo $this->partial('local-contexts/common/project.phtml', ['project' => $content]); ?>  
+<div class='local-contexts-project'>
+<?php echo $content['label']; ?>
+</div>
 <?php endforeach; ?>
 </div>
 <script>

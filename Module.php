@@ -178,7 +178,7 @@ class Module extends AbstractModule
             foreach (array_unique($projects, SORT_REGULAR) as $key => $project) {
                 // Save each project's content as single select value
                 $lcHtml = $this->renderLCNoticeHtml($project);
-                $lcArray['label'] = $lcHtml;
+                $lcArray['label'] = '<div class="column content">' . $lcHtml . '</div>';
                 $lcArray['value'] = json_encode($project);
                 $optionArray[] = $lcArray;
 			}
@@ -242,8 +242,7 @@ class Module extends AbstractModule
 
                 foreach ($project as $key => $content) {
                     if (is_int($key)) {
-                        // Only print content in selected language. If 'English' or 'All',
-                        // print everything (since English doesn't have language element)
+                        // Only print content in selected language. If 'All', print everything
                         if ((isset($content['language']) && $content['language'] == $lcLanguage) 
                         || (!isset($content['language']) && $lcLanguage == 'English') 
                         || $lcLanguage == 'All') {
@@ -258,10 +257,15 @@ class Module extends AbstractModule
                     $projectArray['project_title'] = $project['project_title'];
                 }
 
+                $lcArray = array();
                 if ($projectArray) {
-                    $contentArray[] = $projectArray;
+                    $lcHtml = $this->renderLCNoticeHtml($projectArray);
+                    $lcArray['label'] = $lcHtml;
+                    $lcArray['value'] = json_encode($project);
+                    $contentArray[] = $lcArray;
                 }
             }
+
             echo $view->partial('local-contexts/common/site-footer', [
                 'lc_content' => $contentArray,
             ]);
@@ -274,8 +278,13 @@ class Module extends AbstractModule
         $formData = $event->getParam('data') ? $event->getParam('data')->getContent() : [];
         if ($view->setting('lc_notices')) {
 			$projects = $view->setting('lc_notices');
-			foreach ($projects as $project) {
-                $contentArray[] = $project;
+
+            $lcArray = array();
+            foreach ($projects as $project) {
+                $lcHtml = $this->renderLCNoticeHtml($project);
+                $lcArray['label'] = $lcHtml;
+                $lcArray['value'] = json_encode($project);
+                $contentArray[] = $lcArray;
             }
 
             $languageData = [
@@ -288,7 +297,7 @@ class Module extends AbstractModule
             $languageSelect = new Select('o:lc-content-language');
             $languageSelect->setValueOptions($languageData);
 
-			echo $view->partial('local-contexts/common/lc-resource-edit', [
+            echo $view->partial('local-contexts/common/lc-resource-edit', [
 	            'data' => $formData,
                 'language_select' => $languageSelect,
                 'lc_content' => $contentArray,
@@ -342,7 +351,7 @@ class Module extends AbstractModule
 			$lcArray = array();
             foreach ($projects as $project) {
                 $lcHtml = $this->renderLCNoticeHtml($project);
-                $lcArray['label'] = $lcHtml;
+                $lcArray['label'] = '<div class="column content">' . $lcHtml . '</div>';
                 $lcArray['value'] = json_encode($project);
                 $optionArray[] = $lcArray;
 			}
@@ -392,22 +401,34 @@ class Module extends AbstractModule
         }
     }
 
-    public function renderLCNoticeHtml($project) {
+    public static function renderLCNoticeHtml($project) {
         $lcHtml = '';
         // Save each project's content as single select value
-        $lcHtml = '<div class="column content">';
         if (isset($project['project_url'])) {
             $lcHtml .= "<a class='project-name' target='_blank' href=" . $project['project_url'] . ">" . $project['project_title'] . "</a>";
         }
-        foreach($project as $key => $content) {
-            if (is_int($key)) {
-                $lcHtml .= '<div class="local-contexts-notice"><img class="image" src="' . $content['image_url'] .
-                    '"><div class="column text"><div class="notice-name">' . $content['name'] .
-                    (isset($content['language']) ? '<span class="language"> (' . $content['language'] . ')</span>' : '') . '</div>' .
-                    '<div class="notice-description">' . $content['text'] . '</div></div></div>';
-            }
+
+        $image_urls = array_unique(array_column($project, 'image_url'));
+
+        // Only show one image per shared notice group
+        foreach ($image_urls as $url) {
+            // Build new array arranged by notice image url
+            $noticeByImage = array_filter($project, function($child) use($url) {
+                if (is_array($child)) { return $child['image_url'] == $url; }
+            });
+            $projectByImage[$url] = $noticeByImage;
         }
-        $lcHtml .= '</div>';
+
+        foreach ($projectByImage as $imageUrl => $notices) {
+            $lcHtml .= '<div class="local-contexts-notice"><img class="image" src="' . $imageUrl . '" alt=""><div class="local-context-notice-meta">';
+            foreach ($notices as $notice) {
+                $lcHtml .= '<div class="text"><div class="notice-name">' . $notice['name'] .
+                (isset($notice['language']) ? '<span class="language"> (' . $notice['language'] . ')</span>' : '') . '</div>' .
+                '<div class="notice-description">' . $notice['text'] . '</div></div>';
+            }
+            $lcHtml .= '</div></div>';
+        }
+
         return $lcHtml;
     }
   
