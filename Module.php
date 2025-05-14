@@ -422,8 +422,9 @@ class Module extends AbstractModule
         foreach ($projectByImage as $imageUrl => $notices) {
             $lcHtml .= '<div class="local-contexts-notice"><img class="image" src="' . $imageUrl . '" alt=""><div class="local-context-notice-meta">';
             foreach ($notices as $notice) {
+                $language = isset($notice['language']) ? $notice['language'] : 'English';
                 $lcHtml .= '<div class="text"><div class="notice-name">' . $notice['name'] .
-                (isset($notice['language']) ? '<span class="language"> (' . $notice['language'] . ')</span>' : '') . '</div>' .
+                '<span class="language"> (' . $language . ')</span></div>' .
                 '<div class="notice-description">' . $notice['text'] . '</div></div>';
             }
             $lcHtml .= '</div></div>';
