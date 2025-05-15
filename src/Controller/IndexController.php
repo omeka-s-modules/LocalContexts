@@ -167,6 +167,9 @@ class IndexController extends AbstractActionController
             }
 
             $collaborateMetadata = json_decode($response->getBody(), true);
+            // Set researcher name and profile page to display as linked 'project' metadata
+            $assignArray['project_url'] = isset($collaborateMetadata['researcher']['profile_url']) ? $collaborateMetadata['researcher']['profile_url'] : null;
+            $assignArray['project_title'] = isset($collaborateMetadata['researcher']['name']) ? $collaborateMetadata['researcher']['name'] . ' (researcher)' : null;
             $noticeArray['name'] = isset($collaborateMetadata['notice']['name']) ? $collaborateMetadata['notice']['name'] : null;
             $noticeArray['image_url'] = isset($collaborateMetadata['notice']['img_url']) ? $collaborateMetadata['notice']['img_url'] : null;
             $noticeArray['text'] = isset($collaborateMetadata['notice']['default_text']) ? $collaborateMetadata['notice']['default_text'] : null;
@@ -183,7 +186,7 @@ class IndexController extends AbstractActionController
         $projectMetadata = json_decode($response->getBody(), true);
 
         $assignArray['project_url'] = isset($projectMetadata['project_page']) ? $projectMetadata['project_page'] : null;
-        $assignArray['project_title'] = isset($projectMetadata['title']) ? $projectMetadata['title'] : null;
+        $assignArray['project_title'] = isset($projectMetadata['title']) ? $projectMetadata['title'] . ' (project)' : null;
         if (isset($projectMetadata['notice'])) {
             foreach ($projectMetadata['notice'] as $notice) {
                 $noticeArray['name'] = $notice['name'];
