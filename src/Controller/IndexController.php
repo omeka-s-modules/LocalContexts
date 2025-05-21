@@ -114,7 +114,9 @@ class IndexController extends AbstractActionController
 
         $contentArray = [];
         foreach ($newProjectArray as $project) {
-            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project);
+            // Collapse many projects for ease of viewing
+            $collapse = (count($newProjectArray) >= 3) ? true : false;
+            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $collapse);
             $lcArray['label'] = $lcHtml;
             $lcArray['value'] = json_encode($project);
             $contentArray[] = $lcArray;
@@ -122,7 +124,9 @@ class IndexController extends AbstractActionController
 
         $assignedArray = [];
         foreach ($existingProjectArray as $project) {
-            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project);
+            // Collapse many projects for ease of viewing
+            $collapse = (count($existingProjectArray) >= 3) ? true : false;
+            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $collapse);
             $lcArray['label'] = $lcHtml;
             $lcArray['value'] = json_encode($project);
             $assignedArray[] = $lcArray;

@@ -28,8 +28,8 @@
 }
 
 .local-contexts-multicheckbox {
-    display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
 }
 
 .local-contexts-multicheckbox.inputs,
@@ -37,20 +37,17 @@
     line-height: 24px;
 }
 
-.local-contexts-multicheckbox > label,
 .local-contexts-multicheckbox .local-contexts-multicheckbox-row {
     display: flex;
     align-items: flex-start;
 }
 
-.inputs .local-contexts-multicheckbox {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: flex-start;
+.local-contexts-multicheckbox .column.check {
+    margin: 1rem;
 }
 
-.inputs .local-contexts-multicheckbox .column.check {
-    margin: 1rem;
+.local-contexts-multicheckbox .column.content {
+    flex: 1;
 }
 
 .local-contexts-multicheckbox .local-contexts-multicheckbox-row:nth-child(odd),

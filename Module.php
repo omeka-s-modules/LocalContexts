@@ -401,15 +401,21 @@ class Module extends AbstractModule
         }
     }
 
-    public static function renderLCNoticeHtml($project) {
+    public static function renderLCNoticeHtml($project, $collapse = false) {
         $lcHtml = '';
-        // Save each project's content as single select value
-        if (isset($project['project_url'])) {
-            $lcHtml .= "<a class='project-name' target='_blank' href=" . $project['project_url'] . ">" . $project['project_title'] . "</a>";
+
+        $projectTitle = isset($project['project_title']) ? $project['project_title'] : "Project";
+
+        if ($collapse) {
+            $lcHtml .= '<a href="#" class="expand project-name" aria-label="expand" target="_blank" href=' . $project['project_url'] . '>' . $projectTitle . '</a>';
+            $lcHtml .= '<div class="collapsible">';
+        } else {
+            $lcHtml .= '<a href="#" class="project-name" target="_blank" href=' . $project['project_url'] . '>' . $projectTitle . '</a>';
         }
 
         $image_urls = array_unique(array_column($project, 'image_url'));
 
+        // Save each project's content as single select value
         // Only show one image per shared notice group
         foreach ($image_urls as $url) {
             // Build new array arranged by notice image url
@@ -428,6 +434,10 @@ class Module extends AbstractModule
                 '<div class="notice-description">' . $notice['text'] . '</div></div>';
             }
             $lcHtml .= '</div></div>';
+        }
+
+        if ($collapse) {
+            $lcHtml .= '</div>';
         }
 
         return $lcHtml;
