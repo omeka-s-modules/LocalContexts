@@ -155,7 +155,6 @@ class IndexController extends AbstractActionController
      */
     protected function fetchAPIdata($apiKey, $projectID = null)
     {
-
         if (!empty($projectID)) {
             // If project ID(s) given, retrieve specific project notices
             $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v2/projects/' . $projectID . '/';
@@ -171,9 +170,17 @@ class IndexController extends AbstractActionController
             }
 
             $collaborateMetadata = json_decode($response->getBody(), true);
-            // Set researcher name and profile page to display as linked 'project' metadata
-            $assignArray['project_url'] = isset($collaborateMetadata['researcher']['profile_url']) ? $collaborateMetadata['researcher']['profile_url'] : null;
-            $assignArray['project_title'] = isset($collaborateMetadata['researcher']['name']) ? $collaborateMetadata['researcher']['name'] . ' (researcher)' : null;
+            // Set institution/researcher name and profile page to display as linked 'project' metadata
+            if (isset($collaborateMetadata['institution'])) {
+                $assignArray['project_url'] = $collaborateMetadata['institution']['profile_url'];
+                $assignArray['project_title'] = $collaborateMetadata['institution']['name'] . ' (institution)';
+            } else if (isset($collaborateMetadata['researcher'])) {
+                $assignArray['project_url'] = $collaborateMetadata['researcher']['profile_url'];
+                $assignArray['project_title'] = $collaborateMetadata['researcher']['name'] . ' (researcher)';
+            } else {
+                $assignArray['project_url'] = null;
+                $assignArray['project_title'] = null;
+            }
             $noticeArray['name'] = isset($collaborateMetadata['notice']['name']) ? $collaborateMetadata['notice']['name'] : null;
             $noticeArray['image_url'] = isset($collaborateMetadata['notice']['img_url']) ? $collaborateMetadata['notice']['img_url'] : null;
             $noticeArray['text'] = isset($collaborateMetadata['notice']['default_text']) ? $collaborateMetadata['notice']['default_text'] : null;
@@ -188,24 +195,43 @@ class IndexController extends AbstractActionController
             return;
         }
         $projectMetadata = json_decode($response->getBody(), true);
-
         $assignArray['project_url'] = isset($projectMetadata['project_page']) ? $projectMetadata['project_page'] : null;
         $assignArray['project_title'] = isset($projectMetadata['title']) ? $projectMetadata['title'] . ' (project)' : null;
+
         if (isset($projectMetadata['notice'])) {
-            foreach ($projectMetadata['notice'] as $notice) {
-                $noticeArray['name'] = $notice['name'];
-                $noticeArray['image_url'] = $notice['img_url'];
-                $noticeArray['text'] = $notice['default_text'];
-                $assignArray[] = $noticeArray;
-                if ($notice['translations']) {
-                    foreach ($notice['translations'] as $translation) {
-                        $noticeArray['name'] = $translation['translated_name'];
-                        $noticeArray['image_url'] = $notice['img_url'];
-                        $noticeArray['text'] = $translation['translated_text'];
-                        $noticeArray['language'] = $translation['language'];
-                        $assignArray[] = $noticeArray;
-                        $noticeArray = array();
-                    }
+            $assignArray = $this->buildLCProjectComponent($projectMetadata['notice'], $assignArray, true);
+        }
+        if (isset($projectMetadata['bc_labels'])) {
+            $assignArray = $this->buildLCProjectComponent($projectMetadata['bc_labels'], $assignArray, false);
+        }
+        if (isset($projectMetadata['tk_labels'])) {
+            $assignArray = $this->buildLCProjectComponent($projectMetadata['tk_labels'], $assignArray, false);
+        }
+
+        return $assignArray;
+    }
+
+    /**
+     * Retrieve metadata from Notices and Labels
+     *
+     * @param array $projectMetadataArray
+     * @param bool $isNotice
+     */
+    protected function buildLCProjectComponent($projectMetadataArray, $assignArray, $isNotice = false)
+    {
+        foreach ($projectMetadataArray as $component) {
+            $componentArray['name'] = $component['name'];
+            $componentArray['image_url'] = $component['img_url'];
+            $componentArray['text'] = $isNotice ? $component['default_text'] : $component['label_text'];
+            $assignArray[] = $componentArray;
+            if ($component['translations']) {
+                foreach ($component['translations'] as $translation) {
+                    $componentArray['name'] = $translation['translated_name'];
+                    $componentArray['image_url'] = $component['img_url'];
+                    $componentArray['text'] = $translation['translated_text'];
+                    $componentArray['language'] = $translation['language'];
+                    $assignArray[] = $componentArray;
+                    $componentArray = array();
                 }
             }
         }
