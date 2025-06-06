@@ -176,8 +176,10 @@ class Module extends AbstractModule
 
 			$lcArray = array();
             foreach (array_unique($projects, SORT_REGULAR) as $key => $project) {
+                // Collapse many projects for ease of viewing
+                $collapse = (array_unique($projects, SORT_REGULAR) >= 3) ? true : false;
                 // Save each project's content as single select value
-                $lcHtml = $this->renderLCNoticeHtml($project);
+                $lcHtml = $this->renderLCNoticeHtml($project, $collapse);
                 $lcArray['label'] = '<div class="column content">' . $lcHtml . '</div>';
                 $lcArray['value'] = json_encode($project);
                 $optionArray[] = $lcArray;
@@ -281,7 +283,9 @@ class Module extends AbstractModule
 
             $lcArray = array();
             foreach ($projects as $project) {
-                $lcHtml = $this->renderLCNoticeHtml($project);
+                // Collapse many projects for ease of viewing
+                $collapse = (count($projects) >= 3) ? true : false;
+                $lcHtml = $this->renderLCNoticeHtml($project, $collapse);
                 $lcArray['label'] = $lcHtml;
                 $lcArray['value'] = json_encode($project);
                 $contentArray[] = $lcArray;
@@ -350,7 +354,9 @@ class Module extends AbstractModule
 
 			$lcArray = array();
             foreach ($projects as $project) {
-                $lcHtml = $this->renderLCNoticeHtml($project);
+                // Collapse many projects for ease of viewing
+                $collapse = (count($projects) >= 3) ? true : false;
+                $lcHtml = $this->renderLCNoticeHtml($project, $collapse);
                 $lcArray['label'] = '<div class="column content">' . $lcHtml . '</div>';
                 $lcArray['value'] = json_encode($project);
                 $optionArray[] = $lcArray;
@@ -405,12 +411,11 @@ class Module extends AbstractModule
         $lcHtml = '';
 
         $projectTitle = isset($project['project_title']) ? $project['project_title'] : "Project";
+        $projectUrl = isset($project['project_url']) ? rtrim($project['project_url'], "/") . '/' : '';
 
         if ($collapse) {
-            $lcHtml .= '<a href="#" class="expand project-name" aria-label="expand" target="_blank" href=' . $project['project_url'] . '>' . $projectTitle . '</a>';
+            $lcHtml .= '<a class="expand project-name" aria-label="expand">' . $projectTitle . '</a>';
             $lcHtml .= '<div class="collapsible">';
-        } else {
-            $lcHtml .= '<a href="#" class="project-name" target="_blank" href=' . $project['project_url'] . '>' . $projectTitle . '</a>';
         }
 
         $image_urls = array_unique(array_column($project, 'image_url'));
@@ -437,7 +442,10 @@ class Module extends AbstractModule
         }
 
         if ($collapse) {
+            $lcHtml .= '<a class="project-link" href=' . $project['project_url'] . '>' . $projectTitle . '</a>';
             $lcHtml .= '</div>';
+        } else {
+            $lcHtml .= '<a class="project-name project-link" target="_blank" href=' . $projectUrl . '>' . $projectTitle . '</a>';
         }
 
         return $lcHtml;
@@ -446,7 +454,7 @@ class Module extends AbstractModule
     public function saveLCMetadata(array $lcContent, Property $property, Item $item, $lcLanguage)
     {
         $resourceValues = $item->getValues();
-        $projectURL = isset($lcContent['project_url']) ? $lcContent['project_url'] : null;
+        $projectURL = isset($lcContent['project_url']) ? rtrim($project['project_url'], "/") . '/' : null;
         $langTagArray = array(
             'French' => 'fr',
             'Spanish' => 'es',
