@@ -422,6 +422,7 @@ class Module extends AbstractModule
 
         // Save each project's content as single select value
         // Only show one image per shared notice group
+        $projectByImage = [];
         foreach ($image_urls as $url) {
             // Build new array arranged by notice image url
             $noticeByImage = array_filter($project, function($child) use($url) {
