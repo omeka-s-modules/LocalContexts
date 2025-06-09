@@ -177,6 +177,9 @@ class IndexController extends AbstractActionController
             } else if (isset($collaborateMetadata['researcher'])) {
                 $assignArray['project_url'] = $collaborateMetadata['researcher']['profile_url'];
                 $assignArray['project_title'] = $collaborateMetadata['researcher']['name'] . ' (researcher)';
+            } else if (isset($collaborateMetadata['integration_partner'])) {
+                $assignArray['project_url'] = $collaborateMetadata['integration_partner']['profile_url'];
+                $assignArray['project_title'] = $collaborateMetadata['integration_partner']['name'] . ' (integration partner)';
             } else {
                 $assignArray['project_url'] = null;
                 $assignArray['project_title'] = null;
