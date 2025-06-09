@@ -15,7 +15,7 @@ class ProjectForm extends Form
             'type' => 'password',
             'options' => [
                 'label' => 'API Key', // @translate
-                'info' => 'Optional. To retrieve project notices from Local Contexts Hub, enter user API key. To edit/remove existing notices, leave blank.', // @translate
+                'info' => 'Optional. To retrieve project content from Local Contexts Hub, enter user API key. To edit/remove existing notices, leave blank.', // @translate
             ],
             'attributes' => [
                 'id' => 'lc-api-key',
@@ -27,7 +27,7 @@ class ProjectForm extends Form
             'type' => 'text',
             'options' => [
                 'label' => 'Local Contexts Project ID', // @translate
-                'info' => 'Optional. Input Project IDs to retrieve from Local Contexts Hub. Add multiple IDs separated by "," to return multiple projects. If no ID given, return all projects associated with Local Contexts user.', // @translate
+                'info' => 'Optional. Input project IDs to retrieve from Local Contexts Hub. Add multiple IDs separated by "," to return multiple projects. If no ID given, return all projects associated with Local Contexts user.', // @translate
             ],
             'attributes' => [
                 'id' => 'lc-project-id',

@@ -322,7 +322,7 @@ class Module extends AbstractModule
                 'type' => PropertySelect::class,
                 'options' => [
                     'label' => 'Local Contexts field', // @translate
-                    'info' => 'Apply Local Contexts Notices to chosen metadata field.', // @translate
+                    'info' => 'Apply Local Contexts content to chosen metadata field.', // @translate
                     'empty_option' => '',
                 ],
                 'attributes' => [
