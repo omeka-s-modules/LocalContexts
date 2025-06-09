@@ -15,7 +15,7 @@ class ProjectForm extends Form
             'type' => 'password',
             'options' => [
                 'label' => 'API Key', // @translate
-                'info' => 'Optional. To retrieve project content from Local Contexts Hub, enter user API key. To edit/remove existing notices, leave blank.', // @translate
+                'info' => 'Optional. To retrieve project content from Local Contexts Hub, enter user API key. To edit/remove existing content, leave blank.', // @translate
             ],
             'attributes' => [
                 'id' => 'lc-api-key',
