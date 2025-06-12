@@ -455,7 +455,7 @@ class Module extends AbstractModule
     public function saveLCMetadata(array $lcContent, Property $property, Item $item, $lcLanguage)
     {
         $resourceValues = $item->getValues();
-        $projectURL = isset($lcContent['project_url']) ? rtrim($project['project_url'], "/") . '/' : null;
+        $projectURL = isset($lcContent['project_url']) ? rtrim($lcContent['project_url'], "/") . '/' : null;
         $langTagArray = array(
             'French' => 'fr',
             'Spanish' => 'es',

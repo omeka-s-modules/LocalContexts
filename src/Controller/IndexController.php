@@ -94,16 +94,22 @@ class IndexController extends AbstractActionController
             } else {
                 // Display 'Open to Collaborate' notice along with all user projects
                 $newProjectArray[] = $this->fetchAPIdata($params['lc_api_key']);
-                $projectsURL = 'https://sandbox.localcontextshub.org/api/v2/projects/';
-                $request = $this->client->setUri($projectsURL);
-                $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $params['lc_api_key']]);
-                $response = $request->send();
-                if ($response->isSuccess()) {
-                    $projectsMetadata = json_decode($response->getBody(), true);
-                    foreach ($projectsMetadata['results'] as $project) {
-                        $newProjectArray[] = $this->fetchAPIdata($params['lc_api_key'], $project['unique_id']);
+                $iterate = function ($projectsURL) use (&$iterate, &$newProjectArray, $params) {
+                    $request = $this->client->setUri($projectsURL);
+                    $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $params['lc_api_key']]);
+                    $response = $request->send();
+                    if ($response->isSuccess()) {
+                        $projectsMetadata = json_decode($response->getBody(), true);
+                        foreach ($projectsMetadata['results'] as $project) {
+                            $newProjectArray[] = $this->fetchAPIdata($params['lc_api_key'], $project['unique_id']);
+                        }
+                        if (!is_null($projectsMetadata['next'])) {
+                            $iterate($projectsMetadata['next']);
+                        }
                     }
-                }
+                    return $newProjectArray;
+                };
+                $iterate('https://sandbox.localcontextshub.org/api/v2/projects/');
             }
             $newProjectArray = array_filter($newProjectArray);
         }
