@@ -86,6 +86,7 @@ class IndexController extends AbstractActionController
         if (!empty($params['lc_api_key'])) {
             if (!empty($this->settings->get('lc_project_id'))) {
                 $projects = explode(',', $this->settings->get('lc_project_id'));
+                $projects = array_unique($projects);
                 // Display 'Open to Collaborate' notice along with all given projects
                 $newProjectArray[] = $this->fetchAPIdata($params['lc_api_key']);
                 foreach ($projects as $projectID) {
