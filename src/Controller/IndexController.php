@@ -113,6 +113,8 @@ class IndexController extends AbstractActionController
                 $iterate('https://sandbox.localcontextshub.org/api/v2/projects/');
             }
             $newProjectArray = array_filter($newProjectArray);
+            // Pass API key to assign form to retain assign content after submission
+            $view->setVariable('lc_api_key', $params['lc_api_key']);
         }
 
         // Remove already assigned notices from retrieved notices
