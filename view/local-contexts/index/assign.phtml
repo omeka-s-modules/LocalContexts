@@ -61,6 +61,8 @@ if (isset($lc_content) && isset($lc_assigned)) {
 <?php endif; ?>
 <div id="page-actions">
     <button id='index-submit'><?php echo $this->escapeHtml($this->translate('Submit')); ?></button>
+    <?php if (isset($lc_api_key)): ?>
     <input type="hidden" name="lc_api_key" value="<?php echo $this->escapeHtml($lc_api_key); ?>"/>
+    <?php endif; ?>
 </div>
 <?php echo $this->form()->closeTag($form); ?>
