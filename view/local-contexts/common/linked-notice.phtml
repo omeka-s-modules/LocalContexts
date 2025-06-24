@@ -1,23 +1,21 @@
 <?php $projectUrl = $notice['project_url']; ?>
-<?php if (isset($projectUrl)): ?>
-<a href="<?php echo $projectUrl; ?>" class="local-contexts-notice" target="_blank">
-<?php else: ?>
 <div class="local-contexts-notice">
-<?php endif; ?>
         <?php if ($notice['image_url'] !== ''): ?>
         <img class='image' src='<?php echo $notice['image_url']; ?>' alt=''>
         <?php endif; ?>
         <div class='local-context-notice-meta'>
+            <?php if (isset($projectUrl)): ?>
+            <a href="<?php echo $projectUrl; ?>" class="local-contexts-notice" target="_blank">
+            <?php endif; ?>
             <div class='notice-name'>
                 <?php echo $notice['name']; ?>
-                <?php if (isset($content['language'])): ?>
-                <span class="language"><?php echo $this->translate(sprintf('(%s)', $content['language'])); ?></span>
+                <?php if (isset($notice['language'])): ?>
+                <span class="language"><?php echo $this->translate(sprintf('(%s)', $notice['language'])); ?></span>
                 <?php endif; ?>
             </div>
+            <?php if (isset($projectUrl)): ?>
+            </a>
+            <?php endif; ?>
             <div class='notice-description'><?php echo $notice['text']; ?></div>
         </div>
-<?php if (isset($projectUrl)): ?>
-</a>
-<?php else: ?>
 </div>
-<?php endif; ?>
