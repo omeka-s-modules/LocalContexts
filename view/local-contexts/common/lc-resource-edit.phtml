@@ -2,10 +2,10 @@
     <legend><?php echo $this->translate('Local Contexts Content'); ?></legend>
     <div class="field">
         <div class="field-meta">
-            <label for="o:lc-content"><?php echo $this->translate('Property'); ?></label>
+            <label for="o:lc-content"><?php echo $this->translate('Local Contexts property'); ?></label>
             <a href="#" class="expand" aria-expanded="false" aria-controls="lc-property-description" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
             <div class="collapsible" id="lc-property-description">
-                <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as chosen metadata field.'); ?></div>
+                <div class="field-description"><?php echo $this->translate('Assign Local Contexts content to chosen metadata field.'); ?></div>
             </div>
         </div>
         <div class="inputs localcontexts">
@@ -26,17 +26,17 @@
             <label for="lc_language"><?php echo $this->translate('Local Contexts language'); ?></label>
             <a href="#" class="expand" aria-expanded="false" aria-controls="lc-language-description" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
             <div class="collapsible" id="lc-language-description">
-                <div class="field-description"><?php echo $this->translate('Assign selected Local Contexts notice(s) to chosen metadata field in chosen language(s).'); ?></div>
+                <div class="field-description"><?php echo $this->translate('Only display content in selected language (Note: must already be generated and retrieved from LC Hub).'); ?></div>
             </div>
         </div>
         <div class="inputs localcontexts"><?php echo $this->formSelect($language_select); ?></div>
     </div>
     <div class="field">
         <div class="field-meta">
-            <label for="o:lc-content"><?php echo $this->translate('Local Contexts Notices'); ?></label>
+            <label for="o:lc-content"><?php echo $this->translate('Local Contexts content'); ?></label>
             <a href="#" class="expand" aria-expanded="false" aria-controls="lc-notices-description" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
             <div class="collapsible" id="lc-notices-description">
-                <div class="field-description"><?php echo $this->translate('Assign Local Contexts notice(s) as chosen metadata field.'); ?></div>
+                <div class="field-description"><?php echo $this->translate('Local Contexts value(s) to apply to above field.'); ?></div>
             </div>
         </div>
         <div class="inputs">
