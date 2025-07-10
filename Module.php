@@ -414,7 +414,7 @@ class Module extends AbstractModule
         $projectUrl = isset($project['project_url']) ? rtrim($project['project_url'], "/") . '/' : '';
 
         if ($collapse) {
-            $lcHtml .= '<a class="expand project-name" aria-expanded="false" aria-controls="lc-notices-content" aria-label="expand">' . $projectTitle . '</a>';
+            $lcHtml .= '<a href="#" class="expand project-name" aria-expanded="false" aria-controls="lc-notices-content" aria-label="expand">' . $projectTitle . '</a>';
             $lcHtml .= '<div class="collapsible" id="lc-notices-content">';
         }
 
