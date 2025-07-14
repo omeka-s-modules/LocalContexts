@@ -415,7 +415,7 @@ class Module extends AbstractModule
 
         if ($collapse) {
             $lcHtml .= $projectTitle;
-            $lcHtml .= '<a href="#" class="expand" aria-expanded="false" aria-controls="lc-notices-content" aria-label="expand" />';
+            $lcHtml .= '<a href="#" class="expand" aria-expanded="false" aria-controls="lc-notices-content" aria-label="expand"></a>';
             $lcHtml .= '<div class="collapsible" id="lc-notices-content">';
         }
 
