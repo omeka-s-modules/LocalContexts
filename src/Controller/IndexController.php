@@ -33,10 +33,6 @@ class IndexController extends AbstractActionController
         $view = new ViewModel;
         $form = $this->getForm(ProjectForm::class);
 
-        if ($this->settings->get('lc_project_id')) {        
-            $form->setData(['lc_project_id' => $this->settings->get('lc_project_id')]);       
-        }
-
         $view->setVariable('form', $form);
         return $view;
     }
