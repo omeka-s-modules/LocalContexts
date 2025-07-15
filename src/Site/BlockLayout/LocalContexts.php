@@ -79,7 +79,7 @@ class LocalContexts extends AbstractBlockLayout
 		
 		if ($view->setting('lc_notices')) {
 			$projects = $view->setting('lc_notices');
-			foreach ($projects as $project) {
+			foreach ($projects as $key => $project) {
 				if ((isset($project['project_title']) && $project['project_title'] == $localContextContent) || $project[0]['name'] == $localContextContent) {
                     $projectArray = array();
                     foreach ($project as $key => $content) {
@@ -101,7 +101,7 @@ class LocalContexts extends AbstractBlockLayout
 
                     $lcArray = array();
                     if ($projectArray) {
-                        $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($projectArray);
+                        $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($projectArray, $key);
                         $lcArray['label'] = $lcHtml;
                         $lcArray['value'] = json_encode($project);
                         $contentArray[] = $lcArray;

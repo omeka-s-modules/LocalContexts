@@ -118,22 +118,27 @@ class IndexController extends AbstractActionController
         $newProjectArray = array_map('unserialize', $newProjectArray);
 
         $contentArray = [];
-        foreach ($newProjectArray as $project) {
+        foreach ($newProjectArray as $key => $project) {
+            $projectKey = $key;
             // Collapse many projects for ease of viewing
             $collapse = (count($newProjectArray) >= 3) ? true : false;
-            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $collapse);
+            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $projectKey, $collapse);
             $lcArray['label'] = $lcHtml;
             $lcArray['value'] = json_encode($project);
+            $lcArray['project_key'] = $projectKey;
             $contentArray[] = $lcArray;
         }
 
         $assignedArray = [];
-        foreach ($existingProjectArray as $project) {
+        foreach ($existingProjectArray as $key => $project) {
+            // Need to add string to start of existing project key to avoid concurrence with new project keys
+            $projectKey = '9999' . $key;
             // Collapse many projects for ease of viewing
             $collapse = (count($existingProjectArray) >= 3) ? true : false;
-            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $collapse);
+            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $projectKey, $collapse);
             $lcArray['label'] = $lcHtml;
             $lcArray['value'] = json_encode($project);
+            $lcArray['project_key'] = $projectKey;
             $assignedArray[] = $lcArray;
         }
 

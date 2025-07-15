@@ -179,9 +179,10 @@ class Module extends AbstractModule
                 // Collapse many projects for ease of viewing
                 $collapse = (array_unique($projects, SORT_REGULAR) >= 3) ? true : false;
                 // Save each project's content as single select value
-                $lcHtml = $this->renderLCNoticeHtml($project, $collapse);
+                $lcHtml = $this->renderLCNoticeHtml($project, $key, $collapse);
                 $lcArray['label'] = '<div class="column content">' . $lcHtml . '</div>';
                 $lcArray['value'] = json_encode($project);
+                $lcArray['attributes'] = ['aria-labelledby' => 'lc-notice-title-' . $key];
                 $optionArray[] = $lcArray;
 			}
 
@@ -238,7 +239,7 @@ class Module extends AbstractModule
             $projects = $siteSettings->get('lc_content_sites');
             $lcLanguage = $siteSettings->get('lc_language');
             $contentArray = array();
-            foreach ($projects as $project) {
+            foreach ($projects as $key => $project) {
                 $project = json_decode($project, true);
                 $projectArray = array();
 
@@ -261,7 +262,7 @@ class Module extends AbstractModule
 
                 $lcArray = array();
                 if ($projectArray) {
-                    $lcHtml = $this->renderLCNoticeHtml($projectArray);
+                    $lcHtml = $this->renderLCNoticeHtml($projectArray, $key);
                     $lcArray['label'] = $lcHtml;
                     $lcArray['value'] = json_encode($project);
                     $contentArray[] = $lcArray;
@@ -282,12 +283,13 @@ class Module extends AbstractModule
 			$projects = $view->setting('lc_notices');
 
             $lcArray = array();
-            foreach ($projects as $project) {
+            foreach ($projects as $key => $project) {
                 // Collapse many projects for ease of viewing
                 $collapse = (count($projects) >= 3) ? true : false;
-                $lcHtml = $this->renderLCNoticeHtml($project, $collapse);
+                $lcHtml = $this->renderLCNoticeHtml($project, $key, $collapse);
                 $lcArray['label'] = $lcHtml;
                 $lcArray['value'] = json_encode($project);
+                $lcArray['project_key'] = $key;
                 $contentArray[] = $lcArray;
             }
 
@@ -353,12 +355,13 @@ class Module extends AbstractModule
             ]);
 
 			$lcArray = array();
-            foreach ($projects as $project) {
+            foreach ($projects as $key => $project) {
                 // Collapse many projects for ease of viewing
                 $collapse = (count($projects) >= 3) ? true : false;
-                $lcHtml = $this->renderLCNoticeHtml($project, $collapse);
+                $lcHtml = $this->renderLCNoticeHtml($project, $key, $collapse);
                 $lcArray['label'] = '<div class="column content">' . $lcHtml . '</div>';
                 $lcArray['value'] = json_encode($project);
+                $lcArray['attributes'] = ['aria-labelledby' => 'lc-notice-title-' . $key];
                 $optionArray[] = $lcArray;
 			}
 
@@ -407,16 +410,16 @@ class Module extends AbstractModule
         }
     }
 
-    public static function renderLCNoticeHtml($project, $collapse = false) {
+    public static function renderLCNoticeHtml($project, $projectKey, $collapse = false) {
         $lcHtml = '';
 
         $projectTitle = isset($project['project_title']) ? $project['project_title'] : "Project";
         $projectUrl = isset($project['project_url']) ? rtrim($project['project_url'], "/") . '/' : '';
 
         if ($collapse) {
-            $lcHtml .= $projectTitle;
-            $lcHtml .= '<a href="#" class="expand" aria-expanded="false" aria-controls="lc-notices-content" aria-label="expand"></a>';
-            $lcHtml .= '<div class="collapsible" id="lc-notices-content">';
+            $lcHtml .= '<span id="lc-notice-title-' . $projectKey . '">' . $projectTitle . '</span>';
+            $lcHtml .= '<a href="#" class="expand" aria-expanded="false" aria-controls="lc-notices-content-' . $projectKey . '" aria-label="expand"></a>';
+            $lcHtml .= '<div class="collapsible" id="lc-notices-content-' . $projectKey . '">';
         }
 
         $image_urls = array_unique(array_column($project, 'image_url'));
