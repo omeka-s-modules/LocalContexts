@@ -444,7 +444,7 @@ class Module extends AbstractModule
         }
 
         if ($collapse) {
-            $lcHtml .= '<a class="project-link" target="_blank" href=' . $project['project_url'] . '>' . $projectTitle . '</a>';
+            $lcHtml .= '<a class="project-link" target="_blank" href=' . $projectUrl . '>' . $projectTitle . '</a>';
             $lcHtml .= '</div>';
         } else {
             $lcHtml .= '<a class="project-name project-link" target="_blank" href=' . $projectUrl . '>' . $projectTitle . '</a>';
