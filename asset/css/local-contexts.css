@@ -6,8 +6,8 @@
 .local-contexts-notice {
     display: flex;
     flex-wrap: nowrap;
-    align-items: center;
-    padding: 1rem;
+    align-items: flex-start;
+    padding: 1rem 0;
 }
 
 .element-text .local-contexts-notice {
@@ -15,7 +15,7 @@
 }
 
 .local-context-notice-meta .text {
-    padding: 5px 0px;
+    margin: 0 0 1rem;
 }
 
 .local-contexts-notice .notice-name {
@@ -40,6 +40,7 @@
 .local-contexts-multicheckbox .local-contexts-multicheckbox-row {
     display: flex;
     align-items: flex-start;
+    padding: 1rem;
 }
 
 .inputs .local-contexts-multicheckbox {
@@ -48,8 +49,9 @@
     align-items: flex-start;
 }
 
-.inputs .local-contexts-multicheckbox .column.check {
-    margin: 1rem;
+.local-contexts-multicheckbox input[type="checkbox"] {
+    height: 24px;
+    margin-right: 1rem;
 }
 
 .local-contexts-multicheckbox .column.content {
@@ -60,10 +62,6 @@
 .local-contexts-multicheckbox > label:nth-child(odd),
 .inputs .local-contexts-multicheckbox:nth-child(odd) {
     background: rgba(0,0,0,.04);
-}
-
-.local-contexts-multicheckbox input[type="checkbox"] {
-    margin: 1rem !important;
 }
 
 .local-contexts-notice .image {
