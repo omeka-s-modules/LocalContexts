@@ -19,6 +19,7 @@ class ProjectForm extends Form
             ],
             'attributes' => [
                 'id' => 'lc-api-key',
+                'autocomplete' => 'off',
             ],
         ]);
 
@@ -31,6 +32,7 @@ class ProjectForm extends Form
             ],
             'attributes' => [
                 'id' => 'lc-project-id',
+                'autocomplete' => 'off',
             ],
         ]);
     }
