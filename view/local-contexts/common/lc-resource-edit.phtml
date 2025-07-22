@@ -39,16 +39,16 @@
                 <div class="field-description"><?php echo $this->translate('Local Contexts value(s) to apply to above field.'); ?></div>
             </div>
         </div>
-        <div class="inputs">
-            <?php foreach ($this->lc_content as $project): ?>
-            <label class="local-contexts-multicheckbox">
+        <div class="inputs local-contexts-multicheckbox">
+            <?php foreach ($this->lc_content as $key => $project): ?>
+            <div class="local-contexts-multicheckbox-row">
                 <div class="column check">
                 <input type='checkbox' class="column check" name='o:lc-content[]' aria-labelledby="lc-notice-title-<?php echo $this->escapeHtml($project['project_key']); ?>" value='<?php echo $this->escapeHtml($project['value']); ?>'>
                 </div>
                 <div class="column content">
-                <?php echo $project['label']; ?>
+                    <?php echo $project['label']; ?>
                 </div>
-            </label>
+            </div>
             <?php endforeach; ?>
         </div>
     </div>
