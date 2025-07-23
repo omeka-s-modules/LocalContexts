@@ -118,7 +118,7 @@ class LocalContexts extends AbstractBlockLayout
         
         $view->headLink()->appendStylesheet($view->assetUrl('css/local-contexts.css', 'LocalContexts'));
         return $view->partial('local-contexts/common/block-layout/lc-content-public', [
-            'lc_content' => $contentArray,
+            'lc_content' => isset($contentArray) ? $contentArray : [],
         ]);
 	}
 }
