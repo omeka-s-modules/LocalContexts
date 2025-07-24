@@ -121,8 +121,7 @@ class IndexController extends AbstractActionController
         foreach ($newProjectArray as $key => $project) {
             $projectKey = $key;
             // Collapse many projects for ease of viewing
-            $collapse = (count($newProjectArray) >= 3) ? true : false;
-            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $projectKey, $collapse);
+            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $projectKey, true);
             $lcArray['label'] = $lcHtml;
             $lcArray['value'] = json_encode($project);
             $lcArray['project_key'] = $projectKey;
@@ -134,8 +133,7 @@ class IndexController extends AbstractActionController
             // Need to add string to start of existing project key to avoid concurrence with new project keys
             $projectKey = '9999' . $key;
             // Collapse many projects for ease of viewing
-            $collapse = (count($existingProjectArray) >= 3) ? true : false;
-            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $projectKey, $collapse);
+            $lcHtml = \LocalContexts\Module::renderLCNoticeHtml($project, $projectKey, true);
             $lcArray['label'] = $lcHtml;
             $lcArray['value'] = json_encode($project);
             $lcArray['project_key'] = $projectKey;

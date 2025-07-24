@@ -177,9 +177,8 @@ class Module extends AbstractModule
 			$lcArray = array();
             foreach (array_unique($projects, SORT_REGULAR) as $key => $project) {
                 // Collapse many projects for ease of viewing
-                $collapse = (array_unique($projects, SORT_REGULAR) >= 3) ? true : false;
                 // Save each project's content as single select value
-                $lcHtml = $this->renderLCNoticeHtml($project, $key, $collapse);
+                $lcHtml = $this->renderLCNoticeHtml($project, $key, true);
                 $lcArray['label'] = '<div class="column content">' . $lcHtml . '</div>';
                 $lcArray['value'] = json_encode($project);
                 $lcArray['attributes'] = ['aria-labelledby' => 'lc-notice-title-' . $key];
@@ -285,8 +284,7 @@ class Module extends AbstractModule
             $lcArray = array();
             foreach ($projects as $key => $project) {
                 // Collapse many projects for ease of viewing
-                $collapse = (count($projects) >= 3) ? true : false;
-                $lcHtml = $this->renderLCNoticeHtml($project, $key, $collapse);
+                $lcHtml = $this->renderLCNoticeHtml($project, $key, true);
                 $lcArray['label'] = $lcHtml;
                 $lcArray['value'] = json_encode($project);
                 $lcArray['project_key'] = $key;
@@ -357,8 +355,7 @@ class Module extends AbstractModule
 			$lcArray = array();
             foreach ($projects as $key => $project) {
                 // Collapse many projects for ease of viewing
-                $collapse = (count($projects) >= 3) ? true : false;
-                $lcHtml = $this->renderLCNoticeHtml($project, $key, $collapse);
+                $lcHtml = $this->renderLCNoticeHtml($project, $key, true);
                 $lcArray['label'] = '<div class="column content">' . $lcHtml . '</div>';
                 $lcArray['value'] = json_encode($project);
                 $lcArray['attributes'] = ['aria-labelledby' => 'lc-notice-title-' . $key];
