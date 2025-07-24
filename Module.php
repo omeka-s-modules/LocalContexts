@@ -203,6 +203,7 @@ class Module extends AbstractModule
                 'attributes' => [
                     'value' => $siteSettings->get('lc_language') ?: 'English',
                     'required' => false,
+                    'id' => 'lc_language',
                 ],
             ]);
 
@@ -300,6 +301,7 @@ class Module extends AbstractModule
             ];
             $languageSelect = new Select('o:lc-content-language');
             $languageSelect->setValueOptions($languageData);
+            $languageSelect->setAttribute('id', 'lc_language');
 
             echo $view->partial('local-contexts/common/lc-resource-edit', [
 	            'data' => $formData,
@@ -321,14 +323,14 @@ class Module extends AbstractModule
                 'name' => 'o:lc-content-property',
                 'type' => PropertySelect::class,
                 'options' => [
-                    'label' => 'Local Contexts field', // @translate
+                    'label' => 'Local Contexts property', // @translate
                     'info' => 'Apply Local Contexts content to chosen metadata field.', // @translate
                     'empty_option' => '',
                 ],
                 'attributes' => [
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select property', // @translate
-                    'id' => 'o-property',
+                    'id' => 'lc_property',
                     'required' => false,
                 ],
             ]);
@@ -349,6 +351,7 @@ class Module extends AbstractModule
                 ],
                 'attributes' => [
                     'required' => false,
+                    'id' => 'lc_language',
                 ],
             ]);
 

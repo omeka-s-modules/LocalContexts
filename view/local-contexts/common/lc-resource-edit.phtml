@@ -2,7 +2,7 @@
     <legend><?php echo $this->translate('Local Contexts Content'); ?></legend>
     <div class="field">
         <div class="field-meta">
-            <label for="o:lc-content"><?php echo $this->translate('Local Contexts property'); ?></label>
+            <label for="lc_property"><?php echo $this->translate('Local Contexts property'); ?></label>
             <a href="#" class="expand" aria-expanded="false" aria-controls="lc-property-description" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
             <div class="collapsible" id="lc-property-description">
                 <div class="field-description"><?php echo $this->translate('Assign Local Contexts content to chosen metadata field.'); ?></div>
@@ -14,6 +14,7 @@
                 'name' => 'o:lc-content-property',
                 'attributes' => [
                     'class' => 'chosen-select',
+                    'id' => 'lc_property',
                     'multiple' => false,
                     'data-placeholder' => 'Select a property', // @translate
                 ],
