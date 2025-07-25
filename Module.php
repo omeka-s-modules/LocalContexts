@@ -393,7 +393,7 @@ class Module extends AbstractModule
         $data = $event->getParam('request')->getContent();
         $propertyAdapter = $adapter->getAdapter('properties');
 
-        if (isset($data['o:lc-content-property'])) {
+        if (!empty($data['o:lc-content-property'])) {
             $lcContentProperty = $data['o:lc-content-property'];
         } else {
             // If no metadata value given, do nothing
@@ -401,7 +401,7 @@ class Module extends AbstractModule
         }
         $property = $propertyAdapter->findEntity($lcContentProperty);
 
-        if (isset($data['o:lc-content'])) {
+        if (!empty($data['o:lc-content'])) {
             $lcLanguage = $data['o:lc-content-language'];
             foreach ($data['o:lc-content'] as $lcContent) {
                 $lcContent = json_decode($lcContent, true);
