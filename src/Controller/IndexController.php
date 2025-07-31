@@ -106,7 +106,7 @@ class IndexController extends AbstractActionController
                     }
                     return $newProjectArray;
                 };
-                $iterate('https://sandbox.localcontextshub.org/api/v2/projects/');
+                $iterate('https://localcontextshub.org/api/v2/projects/');
             }
             $newProjectArray = array_filter($newProjectArray);
             // Pass API key to assign form to retain assign content after submission
@@ -165,10 +165,10 @@ class IndexController extends AbstractActionController
     {
         if (!empty($projectID)) {
             // If project ID(s) given, retrieve specific project notices
-            $APIProjectURL = 'https://sandbox.localcontextshub.org/api/v2/projects/' . $projectID . '/';
+            $APIProjectURL = 'https://localcontextshub.org/api/v2/projects/' . $projectID . '/';
         } else {
             // If not, retrieve generic 'Open to Collaborate' notice
-            $collaborateURL = 'https://sandbox.localcontextshub.org/api/v2/notices/open_to_collaborate/';
+            $collaborateURL = 'https://localcontextshub.org/api/v2/notices/open_to_collaborate/';
 
             $request = $this->client->setUri($collaborateURL);
             $request->getRequest()->getHeaders()->addHeaders(['x-api-key' => $apiKey]);
