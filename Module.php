@@ -460,6 +460,7 @@ class Module extends AbstractModule
     {
         $resourceValues = $item->getValues();
         $projectURL = isset($lcContent['project_url']) ? rtrim($lcContent['project_url'], "/") . '/' : null;
+        $projectTitle = isset($lcContent['project_title']) ? $lcContent['project_title'] : null;
         $langTagArray = array(
             'French' => 'fr',
             'Spanish' => 'es',
@@ -481,6 +482,9 @@ class Module extends AbstractModule
                     $value->setProperty($property);
                     if (!empty($projectURL)) {
                         $content['project_url'] = $projectURL;
+                    }
+                    if (!empty($projectTitle)) {
+                        $content['project_title'] = $projectTitle;
                     }
                     $value->setValue(json_encode($content));
                     // Switch to localization language tags

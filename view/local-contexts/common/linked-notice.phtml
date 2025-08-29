@@ -1,21 +1,18 @@
-<?php $projectUrl = $notice['project_url']; ?>
-<div class="local-contexts-notice">
-        <?php if ($notice['image_url'] !== ''): ?>
-        <img class='image' src='<?php echo $notice['image_url']; ?>' alt=''>
-        <?php endif; ?>
-        <div class='local-context-notice-meta'>
-            <?php if (isset($projectUrl)): ?>
-            <a href="<?php echo $projectUrl; ?>" class="local-contexts-notice" target="_blank">
+<?php
+$projectUrl = $notice['project_url'];
+$projectTitle = $notice['project_title'];
+?>
+<div class="local-contexts-project">
+    <div class="local-contexts-notice">
+            <?php if ($notice['image_url'] !== ''): ?>
+            <img class='image' src='<?php echo $notice['image_url']; ?>' alt=''>
             <?php endif; ?>
-            <div class='notice-name'>
-                <?php echo $notice['name']; ?>
-                <?php if (isset($notice['language'])): ?>
-                <span class="language"><?php echo $this->translate(sprintf('(%s)', $notice['language'])); ?></span>
-                <?php endif; ?>
+            <div class='local-context-notice-meta'>
+                <div class='notice-name'><?php echo $notice['name']; ?></div>
+                <div class='notice-description'><?php echo $notice['text']; ?></div>
             </div>
-            <?php if (isset($projectUrl)): ?>
-            </a>
-            <?php endif; ?>
-            <div class='notice-description'><?php echo $notice['text']; ?></div>
-        </div>
+    </div>
+    <?php if (isset($projectUrl) && isset($projectTitle)): ?>
+    <a href="<?php echo $projectUrl; ?>" class="project-name project-link" target="_blank"><?php echo $projectTitle; ?></a>
+    <?php endif; ?>
 </div>
