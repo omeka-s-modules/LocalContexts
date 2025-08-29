@@ -68,6 +68,7 @@
     height: 75px;
     border: 0px !important;
     margin-right: 1rem;
+    max-width: none;
 }
 
 .project-link {
