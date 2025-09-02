@@ -142,6 +142,7 @@ class IndexController extends AbstractActionController
 
         // Redirect to index page if no content to display
         if (empty($contentArray) && empty($assignedArray)) {
+            $this->messenger()->addError('No Local Contexts content to display!'); // @translate
             return $this->redirect()->toRoute('admin/local-contexts');
         } else if (empty($contentArray) && !empty($assignedArray)) {
             $view->setVariable('lc_assigned', $assignedArray);
