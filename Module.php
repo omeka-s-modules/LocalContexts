@@ -154,6 +154,23 @@ class Module extends AbstractModule
         );
     }
 
+    public function uninstall(ServiceLocatorInterface $serviceLocator)
+    {
+        $settings = $serviceLocator->get('Omeka\Settings');
+        $settings->delete('lc_notices');
+        $settings->delete('lc_project_id');
+
+        $api = $serviceLocator->get('Omeka\ApiManager');
+        $sites = $api->search('sites', [])->getContent();
+        $siteSettings = $serviceLocator->get('Omeka\Settings\Site');
+
+        foreach ($sites as $site) {
+            $siteSettings->setTargetId($site->id());
+            $siteSettings->delete('lc_content_sites');
+            $siteSettings->delete('lc_language');
+        }
+    }
+
     public function addLCSiteSettings(Event $event)
     {
         $form = $event->getTarget();
