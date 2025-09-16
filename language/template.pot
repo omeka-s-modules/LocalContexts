@@ -1,0 +1,146 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-09 11:17-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/Site/BlockLayout/LocalContexts.php:58
+msgid "LC project name"
+msgstr ""
+
+#: src/Site/BlockLayout/LocalContexts.php:61
+msgid "LC Language"
+msgstr ""
+
+#: view/local-contexts/common/lc-resource-edit.phtml:2
+msgid "Local Contexts Content"
+msgstr ""
+
+#: view/local-contexts/common/lc-resource-edit.phtml:5
+msgid "Local Contexts property"
+msgstr ""
+
+#: view/local-contexts/common/lc-resource-edit.phtml:8
+msgid "Assign Local Contexts content to chosen metadata field."
+msgstr ""
+
+#: view/local-contexts/common/lc-resource-edit.phtml:27
+msgid "Local Contexts language"
+msgstr ""
+
+#: view/local-contexts/common/lc-resource-edit.phtml:30
+msgid ""
+"Only display content in selected language (Note: must already be generated "
+"and retrieved from LC Hub)."
+msgstr ""
+
+#: view/local-contexts/common/lc-resource-edit.phtml:37
+msgid "Local Contexts content"
+msgstr ""
+
+#: view/local-contexts/common/lc-resource-edit.phtml:40
+msgid "Local Contexts value(s) to apply to above field."
+msgstr ""
+
+#: view/local-contexts/index/assign.phtml:14
+msgid "Assign Notices & Labels"
+msgstr ""
+
+#: view/local-contexts/index/assign.phtml:14
+#: view/local-contexts/index/index.phtml:5
+msgid "Local Contexts"
+msgstr ""
+
+#: view/local-contexts/index/assign.phtml:19
+msgid "Assign"
+msgstr ""
+
+#: view/local-contexts/index/assign.phtml:29
+msgid ""
+"Select content to make available for assignment to Sites, Items & page "
+"blocks:"
+msgstr ""
+
+#: view/local-contexts/index/assign.phtml:47
+msgid ""
+"Select existing content to remove from assignment list (content already "
+"assigned to Sites, Items & page blocks must be manually removed):"
+msgstr ""
+
+#: view/local-contexts/index/index.phtml:5
+msgid "API Settings"
+msgstr ""
+
+#: Module.php:210
+msgid "Local Contexts Language"
+msgstr ""
+
+#: Module.php:213 Module.php:313 Module.php:362
+msgid "All available languages"
+msgstr ""
+
+#: Module.php:214 Module.php:314 Module.php:363
+msgid "English"
+msgstr ""
+
+#: Module.php:215 Module.php:315 Module.php:364
+msgid "French"
+msgstr ""
+
+#: Module.php:216 Module.php:316 Module.php:365
+msgid "Spanish"
+msgstr ""
+
+#: Module.php:217 Module.php:317 Module.php:366
+msgid "Māori"
+msgstr ""
+
+#: Module.php:232 Module.php:389
+msgid "Local Contexts value(s)"
+msgstr ""
+
+#: Module.php:233
+msgid "Local Contexts value(s) to apply to site footer."
+msgstr ""
+
+#: Module.php:344
+msgid "Apply Local Contexts content to chosen metadata field."
+msgstr ""
+
+#: src/Form/ProjectForm.php:17
+msgid "API Key"
+msgstr ""
+
+#: src/Form/ProjectForm.php:18
+msgid ""
+"Optional. To retrieve project content from Local Contexts Hub, enter user "
+"API key. To edit/remove existing content, leave blank."
+msgstr ""
+
+#: src/Form/ProjectForm.php:30
+msgid "Local Contexts Project ID"
+msgstr ""
+
+#: src/Form/ProjectForm.php:31
+msgid ""
+"Optional. Input project IDs to retrieve from Local Contexts Hub. Add "
+"multiple IDs separated by \",\" to return multiple projects. If no ID given, "
+"return all projects associated with Local Contexts user."
+msgstr ""
+
+#: src/Controller/IndexController.php:145
+msgid "No Local Contexts content to display!"
+msgstr ""
