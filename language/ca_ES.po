@@ -1,0 +1,167 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Rubén Alcaraz Martínez <rubenalcarazmartinez@gmail.com>, 2025
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-09 11:17-0700\n"
+"PO-Revision-Date: 2025-09-16 17:27+0000\n"
+"Last-Translator: Rubén Alcaraz Martínez <rubenalcarazmartinez@gmail.com>, 2025\n"
+"Language-Team: Catalan (Spain) (https://app.transifex.com/omeka/teams/14184/ca_ES/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca_ES\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/Site/BlockLayout/LocalContexts.php:58
+msgid "LC project name"
+msgstr "LC: nom del projecte"
+
+#: src/Site/BlockLayout/LocalContexts.php:61
+msgid "LC Language"
+msgstr "LC: idioma"
+
+#: view/local-contexts/common/lc-resource-edit.phtml:2
+msgid "Local Contexts Content"
+msgstr "Contingut dels contextos locals"
+
+#: view/local-contexts/common/lc-resource-edit.phtml:5
+msgid "Local Contexts property"
+msgstr "Propietat dels contextos locals"
+
+#: view/local-contexts/common/lc-resource-edit.phtml:8
+msgid "Assign Local Contexts content to chosen metadata field."
+msgstr ""
+"Assigna el contingut dels contextos locals al camp de metadades seleccionat."
+
+#: view/local-contexts/common/lc-resource-edit.phtml:27
+msgid "Local Contexts language"
+msgstr "Idioma dels contextos locals"
+
+#: view/local-contexts/common/lc-resource-edit.phtml:30
+msgid ""
+"Only display content in selected language (Note: must already be generated "
+"and retrieved from LC Hub)."
+msgstr ""
+"Mostra només el contingut en l'idioma seleccionat (Nota: ja ha d'haver estat"
+" generat i recuperat de l'LC Hub)."
+
+#: view/local-contexts/common/lc-resource-edit.phtml:37
+msgid "Local Contexts content"
+msgstr "Contingut dels contextos locals"
+
+#: view/local-contexts/common/lc-resource-edit.phtml:40
+msgid "Local Contexts value(s) to apply to above field."
+msgstr "Valor(s) dels contextos locals a aplicar al camp anterior."
+
+#: view/local-contexts/index/assign.phtml:14
+msgid "Assign Notices & Labels"
+msgstr "Assigna avisos i etiquetes"
+
+#: view/local-contexts/index/assign.phtml:14
+#: view/local-contexts/index/index.phtml:5
+msgid "Local Contexts"
+msgstr "Local Contexts"
+
+#: view/local-contexts/index/assign.phtml:19
+msgid "Assign"
+msgstr "Assigna"
+
+#: view/local-contexts/index/assign.phtml:29
+msgid ""
+"Select content to make available for assignment to Sites, Items & page "
+"blocks:"
+msgstr ""
+"Selecciona el contingut que vols posar a disposició per assignar a llocs, "
+"recursos i blocs de pàgina:"
+
+#: view/local-contexts/index/assign.phtml:47
+msgid ""
+"Select existing content to remove from assignment list (content already "
+"assigned to Sites, Items & page blocks must be manually removed):"
+msgstr ""
+"Selecciona el contingut existent que vols eliminar de la llista "
+"d'assignacions (el contingut ja ha estat assignat a llocs, recursos i blocs "
+"de pàgina s'ha d'eliminar manualment):"
+
+#: view/local-contexts/index/index.phtml:5
+msgid "API Settings"
+msgstr "Paràmetres de l'API"
+
+#: Module.php:210
+msgid "Local Contexts Language"
+msgstr "Idioma dels contextos locals"
+
+#: Module.php:213 Module.php:313 Module.php:362
+msgid "All available languages"
+msgstr "Tots els idiomes disponibles"
+
+#: Module.php:214 Module.php:314 Module.php:363
+msgid "English"
+msgstr "Anglès"
+
+#: Module.php:215 Module.php:315 Module.php:364
+msgid "French"
+msgstr "Francès"
+
+#: Module.php:216 Module.php:316 Module.php:365
+msgid "Spanish"
+msgstr "Espanyol"
+
+#: Module.php:217 Module.php:317 Module.php:366
+msgid "Māori"
+msgstr "Maori"
+
+#: Module.php:232 Module.php:389
+msgid "Local Contexts value(s)"
+msgstr "Valor(s) dels contextos locals"
+
+#: Module.php:233
+msgid "Local Contexts value(s) to apply to site footer."
+msgstr ""
+"Valor(s) dels contextos locals per aplicar al peu de pàgina del lloc web."
+
+#: Module.php:344
+msgid "Apply Local Contexts content to chosen metadata field."
+msgstr ""
+"Aplica el contingut dels contextos locals al camp de metadades seleccionat."
+
+#: src/Form/ProjectForm.php:17
+msgid "API Key"
+msgstr "Clau API"
+
+#: src/Form/ProjectForm.php:18
+msgid ""
+"Optional. To retrieve project content from Local Contexts Hub, enter user "
+"API key. To edit/remove existing content, leave blank."
+msgstr ""
+"Opcional. Per recuperar el contingut del projecte des del Hub dels contextos"
+" locals, introduïu la clau API d'usuari. Per editar o eliminar contingut "
+"existent, deixa el camp en blanc."
+
+#: src/Form/ProjectForm.php:30
+msgid "Local Contexts Project ID"
+msgstr "ID del projecte dels contextos locals"
+
+#: src/Form/ProjectForm.php:31
+msgid ""
+"Optional. Input project IDs to retrieve from Local Contexts Hub. Add "
+"multiple IDs separated by \",\" to return multiple projects. If no ID given,"
+" return all projects associated with Local Contexts user."
+msgstr ""
+"Opcional. Introduïu els identificadors del projecte per recuperar-los des "
+"del Hub dels contextos locals. Afegeix diversos identificadors separats per "
+"\",\" per obtenir diversos projectes. Si no s'indica cap identificador, es "
+"recuperaran tots els projectes associats a l'usuari dels contextos locals."
+
+#: src/Controller/IndexController.php:145
+msgid "No Local Contexts content to display!"
+msgstr "No hi ha contingut de cap context local!"
