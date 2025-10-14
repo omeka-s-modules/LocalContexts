@@ -331,6 +331,10 @@ class Module extends AbstractModule
 
     public function LCBatchUpdateResource(Event $event) {
         $form = $event->getTarget();
+        if ('item' !== $form->getOption('resource_type')) {
+            return; // Include elements only on item batch edit.
+        }
+
         $settings = $this->getServiceLocator()->get('Omeka\Settings');
 
         if ($settings->get('lc_notices')) {
