@@ -1,16 +1,12 @@
 <?php
 namespace LocalContexts\DataType;
 
-use Omeka\Api\Adapter\AbstractEntityAdapter;
 use Omeka\Api\Representation\ValueRepresentation;
 use Omeka\DataType\Literal;
-use Omeka\Entity\Value;
-use Laminas\Form\Element\Select;
 use Laminas\View\Renderer\PhpRenderer;
 
 class LocalContexts extends Literal
 {
-
     public function getName()
     {
         return 'lc_content';
@@ -29,6 +25,6 @@ class LocalContexts extends Literal
 
         $label = json_decode($value->value(), 1);
 
-        return $view->partial('local-contexts/common/linked-notice.phtml', ['notice' => $label]); 
+        return $view->partial('local-contexts/common/linked-notice.phtml', ['notice' => $label]);
     }
 }

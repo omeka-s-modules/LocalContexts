@@ -5,7 +5,6 @@ use Laminas\Form\Form;
 
 class ProjectForm extends Form
 {
-
     public function init()
     {
         $this->setAttribute('action', 'local-contexts/assign');

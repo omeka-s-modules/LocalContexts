@@ -1,17 +1,11 @@
 <?php
 namespace LocalContexts\Controller;
 
-use LocalContexts\Module;
 use LocalContexts\Form\ProjectForm;
 use Laminas\Form\Form;
 use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Model\ViewModel;
-use Laminas\Http\Request;
-use Laminas\Http\Client;
-use Omeka\Api\Exception as ApiException;
 use Omeka\Settings\Settings;
-use Omeka\Stdlib\Message;
 
 class IndexController extends AbstractActionController
 {
@@ -19,7 +13,7 @@ class IndexController extends AbstractActionController
      * @var Settings
      */
     protected $settings;
-    
+
     protected $client;
 
     public function __construct(Settings $settings, $client)
@@ -27,7 +21,7 @@ class IndexController extends AbstractActionController
         $this->settings = $settings;
         $this->client = $client;
     }
-    
+
     public function indexAction()
     {
         $view = new ViewModel;
@@ -50,7 +44,7 @@ class IndexController extends AbstractActionController
                 $this->settings->set('lc_project_id', $formData['lc_project_id']);
             }
         }
-        
+
         $assignForm = new Form();
 
         // If LC remove content selected, remove from general settings
@@ -69,7 +63,7 @@ class IndexController extends AbstractActionController
             foreach ($params['lc-notice'] as $notice) {
                 $noticeArray[] = json_decode($notice, true);
             }
-            
+
             // Add notices to general settings for site/item/page block access
             if (isset($existingProjectArray)) {
                 $existingProjectArray = array_unique(array_merge($existingProjectArray, $noticeArray), SORT_REGULAR);
@@ -114,7 +108,7 @@ class IndexController extends AbstractActionController
         }
 
         // Remove already assigned notices from retrieved notices
-        $newProjectArray = array_diff(array_map('serialize',$newProjectArray), array_map('serialize', $existingProjectArray));
+        $newProjectArray = array_diff(array_map('serialize', $newProjectArray), array_map('serialize', $existingProjectArray));
         $newProjectArray = array_map('unserialize', $newProjectArray);
 
         $contentArray = [];
@@ -144,9 +138,9 @@ class IndexController extends AbstractActionController
         if (empty($contentArray) && empty($assignedArray)) {
             $this->messenger()->addError('No Local Contexts content to display!'); // @translate
             return $this->redirect()->toRoute('admin/local-contexts');
-        } else if (empty($contentArray) && !empty($assignedArray)) {
+        } elseif (empty($contentArray) && !empty($assignedArray)) {
             $view->setVariable('lc_assigned', $assignedArray);
-        } else if (!empty($contentArray) && empty($assignedArray)) {
+        } elseif (!empty($contentArray) && empty($assignedArray)) {
             $view->setVariable('lc_content', $contentArray);
         } else {
             $view->setVariable('lc_content', $contentArray);
@@ -183,19 +177,19 @@ class IndexController extends AbstractActionController
             if (isset($collaborateMetadata['institution'])) {
                 $assignArray['project_url'] = $collaborateMetadata['institution']['profile_url'];
                 $assignArray['project_title'] = $collaborateMetadata['institution']['name'] . ' (institution)';
-            } else if (isset($collaborateMetadata['researcher'])) {
+            } elseif (isset($collaborateMetadata['researcher'])) {
                 $assignArray['project_url'] = $collaborateMetadata['researcher']['profile_url'];
                 $assignArray['project_title'] = $collaborateMetadata['researcher']['name'] . ' (researcher)';
-            } else if (isset($collaborateMetadata['integration_partner'])) {
+            } elseif (isset($collaborateMetadata['integration_partner'])) {
                 $assignArray['project_url'] = $collaborateMetadata['integration_partner']['profile_url'];
                 $assignArray['project_title'] = $collaborateMetadata['integration_partner']['name'] . ' (integration partner)';
             } else {
                 $assignArray['project_url'] = null;
                 $assignArray['project_title'] = null;
             }
-            $noticeArray['name'] = isset($collaborateMetadata['notice']['name']) ? $collaborateMetadata['notice']['name'] : null;
-            $noticeArray['image_url'] = isset($collaborateMetadata['notice']['img_url']) ? $collaborateMetadata['notice']['img_url'] : null;
-            $noticeArray['text'] = isset($collaborateMetadata['notice']['default_text']) ? $collaborateMetadata['notice']['default_text'] : null;
+            $noticeArray['name'] = $collaborateMetadata['notice']['name'] ?? null;
+            $noticeArray['image_url'] = $collaborateMetadata['notice']['img_url'] ?? null;
+            $noticeArray['text'] = $collaborateMetadata['notice']['default_text'] ?? null;
             $assignArray[] = $noticeArray;
             return $assignArray;
         }
@@ -207,7 +201,7 @@ class IndexController extends AbstractActionController
             return;
         }
         $projectMetadata = json_decode($response->getBody(), true);
-        $assignArray['project_url'] = isset($projectMetadata['project_page']) ? $projectMetadata['project_page'] : null;
+        $assignArray['project_url'] = $projectMetadata['project_page'] ?? null;
         $assignArray['project_title'] = isset($projectMetadata['title']) ? $projectMetadata['title'] . ' (project)' : null;
 
         if (isset($projectMetadata['notice'])) {
@@ -243,7 +237,7 @@ class IndexController extends AbstractActionController
                     $componentArray['text'] = $translation['translated_text'];
                     $componentArray['language'] = $translation['language'];
                     $assignArray[] = $componentArray;
-                    $componentArray = array();
+                    $componentArray = [];
                 }
             }
         }

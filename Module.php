@@ -8,7 +8,6 @@ use Omeka\Entity\Property;
 use Omeka\Form\Element\PropertySelect;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\EventManager\SharedEventManagerInterface;
-use Laminas\Form\Fieldset;
 use Laminas\Form\Element;
 use Laminas\Form\Element\Select;
 use Laminas\Form\Element\MultiCheckbox;
@@ -22,7 +21,7 @@ class Module extends AbstractModule
     }
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
-    {    
+    {
         // Add and authorize LC content to Site Settings form
         $sharedEventManager->attach(
             'Omeka\Form\SiteSettingsForm',
@@ -184,14 +183,14 @@ class Module extends AbstractModule
 
         if ($settings->get('lc_notices') || $siteSettings->get('lc_content_sites')) {
             // Combine available general settings projects with existing site settings projects
-            $projects = $settings->get('lc_notices') ? $settings->get('lc_notices'): [];
+            $projects = $settings->get('lc_notices') ? $settings->get('lc_notices') : [];
             if ($siteSettings->get('lc_content_sites')) {
-                foreach($siteSettings->get('lc_content_sites') as $siteProject) {
+                foreach ($siteSettings->get('lc_content_sites') as $siteProject) {
                     $projects[] = json_decode($siteProject, true);
                 }
             }
 
-			$lcArray = array();
+            $lcArray = [];
             foreach (array_unique($projects, SORT_REGULAR) as $key => $project) {
                 // Collapse many projects for ease of viewing
                 // Save each project's content as single select value
@@ -200,7 +199,7 @@ class Module extends AbstractModule
                 $lcArray['value'] = json_encode($project);
                 $lcArray['attributes'] = ['aria-labelledby' => 'lc-notice-title-' . $key];
                 $optionArray[] = $lcArray;
-			}
+            }
 
             $form->add([
                 'name' => 'lc_language',
@@ -255,16 +254,16 @@ class Module extends AbstractModule
         if (isset($view->site) && $siteSettings->get('lc_content_sites')) {
             $projects = $siteSettings->get('lc_content_sites');
             $lcLanguage = $siteSettings->get('lc_language');
-            $contentArray = array();
+            $contentArray = [];
             foreach ($projects as $key => $project) {
                 $project = json_decode($project, true);
-                $projectArray = array();
+                $projectArray = [];
 
                 foreach ($project as $key => $content) {
                     if (is_int($key)) {
                         // Only print content in selected language. If 'All', print everything
-                        if ((isset($content['language']) && $content['language'] == $lcLanguage) 
-                        || (!isset($content['language']) && $lcLanguage == 'English') 
+                        if ((isset($content['language']) && $content['language'] == $lcLanguage)
+                        || (!isset($content['language']) && $lcLanguage == 'English')
                         || $lcLanguage == 'All') {
                             $projectArray[] = $content;
                         }
@@ -277,7 +276,7 @@ class Module extends AbstractModule
                     $projectArray['project_title'] = $project['project_title'];
                 }
 
-                $lcArray = array();
+                $lcArray = [];
                 if ($projectArray) {
                     $lcHtml = $this->renderLCNoticeHtml($projectArray, $key);
                     $lcArray['label'] = $lcHtml;
@@ -293,13 +292,14 @@ class Module extends AbstractModule
         }
     }
 
-    public function LCEditResource(Event $event) {
+    public function LCEditResource(Event $event)
+    {
         $view = $event->getTarget();
         $formData = $event->getParam('data') ? $event->getParam('data')->getContent() : [];
         if ($view->setting('lc_notices')) {
-			$projects = $view->setting('lc_notices');
+            $projects = $view->setting('lc_notices');
 
-            $lcArray = array();
+            $lcArray = [];
             foreach ($projects as $key => $project) {
                 // Collapse many projects for ease of viewing
                 $lcHtml = $this->renderLCNoticeHtml($project, $key, true);
@@ -321,15 +321,16 @@ class Module extends AbstractModule
             $languageSelect->setAttribute('id', 'lc_language');
 
             echo $view->partial('local-contexts/common/lc-resource-edit', [
-	            'data' => $formData,
+                'data' => $formData,
                 'language_select' => $languageSelect,
                 'lc_content' => $contentArray,
-	        ]);
+            ]);
             $view->headLink()->appendStylesheet($view->assetUrl('css/local-contexts.css', 'LocalContexts'));
         }
     }
 
-    public function LCBatchUpdateResource(Event $event) {
+    public function LCBatchUpdateResource(Event $event)
+    {
         $form = $event->getTarget();
         if ('item' !== $form->getOption('resource_type')) {
             return; // Include elements only on item batch edit.
@@ -338,7 +339,7 @@ class Module extends AbstractModule
         $settings = $this->getServiceLocator()->get('Omeka\Settings');
 
         if ($settings->get('lc_notices')) {
-			$projects = $settings->get('lc_notices');
+            $projects = $settings->get('lc_notices');
 
             $form->add([
                 'name' => 'o:lc-content-property',
@@ -376,7 +377,7 @@ class Module extends AbstractModule
                 ],
             ]);
 
-			$lcArray = array();
+            $lcArray = [];
             foreach ($projects as $key => $project) {
                 // Collapse many projects for ease of viewing
                 $lcHtml = $this->renderLCNoticeHtml($project, $key, true);
@@ -384,7 +385,7 @@ class Module extends AbstractModule
                 $lcArray['value'] = json_encode($project);
                 $lcArray['attributes'] = ['aria-labelledby' => 'lc-notice-title-' . $key];
                 $optionArray[] = $lcArray;
-			}
+            }
 
             $form->add([
                 'name' => 'o:lc-content',
@@ -408,7 +409,8 @@ class Module extends AbstractModule
         }
     }
 
-    public function LCHydrate(Event $event) {
+    public function LCHydrate(Event $event)
+    {
         $item = $event->getParam('entity');
         $adapter = $event->getTarget();
         $data = $event->getParam('request')->getContent();
@@ -431,10 +433,11 @@ class Module extends AbstractModule
         }
     }
 
-    public static function renderLCNoticeHtml($project, $projectKey, $collapse = false) {
+    public static function renderLCNoticeHtml($project, $projectKey, $collapse = false)
+    {
         $lcHtml = '';
 
-        $projectTitle = isset($project['project_title']) ? $project['project_title'] : "Project";
+        $projectTitle = $project['project_title'] ?? "Project";
         $projectUrl = isset($project['project_url']) ? rtrim($project['project_url'], "/") . '/' : '';
 
         if ($collapse) {
@@ -450,8 +453,10 @@ class Module extends AbstractModule
         $projectByImage = [];
         foreach ($image_urls as $url) {
             // Build new array arranged by notice image url
-            $noticeByImage = array_filter($project, function($child) use($url) {
-                if (is_array($child)) { return $child['image_url'] == $url; }
+            $noticeByImage = array_filter($project, function ($child) use ($url) {
+                if (is_array($child)) {
+                    return $child['image_url'] == $url;
+                }
             });
             $projectByImage[$url] = $noticeByImage;
         }
@@ -459,7 +464,7 @@ class Module extends AbstractModule
         foreach ($projectByImage as $imageUrl => $notices) {
             $lcHtml .= '<div class="local-contexts-notice"><img class="image" src="' . $imageUrl . '" alt=""><div class="local-context-notice-meta">';
             foreach ($notices as $notice) {
-                $language = isset($notice['language']) ? $notice['language'] : 'English';
+                $language = $notice['language'] ?? 'English';
                 $lcHtml .= '<div class="text"><div class="notice-name">' . $notice['name'] .
                 '<span class="language"> (' . $language . ')</span></div>' .
                 '<div class="notice-description">' . $notice['text'] . '</div></div>';
@@ -476,25 +481,25 @@ class Module extends AbstractModule
 
         return $lcHtml;
     }
-  
+
     public function saveLCMetadata(array $lcContent, Property $property, Item $item, $lcLanguage)
     {
         $resourceValues = $item->getValues();
         $projectURL = isset($lcContent['project_url']) ? rtrim($lcContent['project_url'], "/") . '/' : null;
-        $projectTitle = isset($lcContent['project_title']) ? $lcContent['project_title'] : null;
-        $langTagArray = array(
+        $projectTitle = $lcContent['project_title'] ?? null;
+        $langTagArray = [
             'French' => 'fr',
             'Spanish' => 'es',
-            'Māori' => 'mi'
-        );
+            'Māori' => 'mi',
+        ];
 
         // Save LC content as lc_content Datatype to better display LC graphic and format
-        foreach($lcContent as $key => $content) {
+        foreach ($lcContent as $key => $content) {
             if (is_int($key)) {
                 // Only print content in selected language. If 'English' or 'All',
                 // print everything (since English doesn't have language element)
-                if ((isset($content['language']) && $content['language'] == $lcLanguage) 
-                || (!isset($content['language']) && $lcLanguage == 'English') 
+                if ((isset($content['language']) && $content['language'] == $lcLanguage)
+                || (!isset($content['language']) && $lcLanguage == 'English')
                 || $lcLanguage == 'All') {
                     $value = new Value;
                     $value->setResource($item);
